@@ -1,52 +1,99 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
-<?php
-    include 'dbconnect.php';
-    
-    $get_year = $_GET['year'];
-    $get_apartment_id = $_GET['apartment_id'];
-    
-    $query = 'SELECT
-                tenant.id, tenant.name, tenant.entry, tenant.extract
-              FROM
-                tenant
-              WHERE tenant.apartment_id = ' . $get_apartment_id . '
-                AND (YEAR(tenant.entry) <= ' . $get_year . ' <= YEAR(tenant.extract)
-                OR (YEAR(tenant.entry) <= ' . $get_year . ' AND tenant.extract IS NULL))';
-    $result = mysqli_query($db, $query);   
-    mysqli_close($db);    
-?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-    <head>
-	    <title><?php echo 'Nebenkosten ' . $get_year . ': ' . $house_name
-	                        . ' - ' . $apartment_name; ?></title>
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-        <meta name="author" content="Felix Horn">
-        <link rel="stylesheet" type="text/css" href="../styles.css">
-    </head>
+  <head>
+    <title>Nebenkostenabrechnung - Mieter</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="author" content="Felix Horn">
+    <meta http-equiv="language" content="de">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+  </head>
 
-    <body>
-      <div class="rahmen">
-        <div class="topnavi">
-          <ul>
-            <li><a href="index.htm">Home</a></li>
-          </ul>
-        </div>
-        <div class="inhalt">
-          <p>
-	        <?php
-	          echo '<ul>';
-	          while($row = mysqli_fetch_object($result)) {
-	            if ($row->extract == NULL) {
-	              $row->extract = 'Jetzt';
-	            }
-	            echo '<li><a href="month.php?year=' . $get_year
-	              . '&amp;apartment_id=' . $get_apartment_id
-	              . '&amp;tenant_id=' . $row->id . '">' . $row->name . ': ' . $row->entry . ' - ' . $row->extract . '</a></li>';
-		        }
-		        echo '</ul>';
-	        ?>
-		      </p>
-		    </div>
-		  </div>
-    </body>
+  <body>
+      <div class="head">
+        <h1>Nebenkostenabrechnung</h1>
+      </div>
+      <div class="topnavi">
+        <ul>
+          <li>
+            <h3>Verwalten</h3>
+            <ul class="subnavi">
+              <li><a href="house.php">Haus</a></li>
+              <li><a href="apartment.php">Wohnung</a></li>
+              <li><a href="tenant.php">Mieter</a></li>
+            </ul>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <h3>Erfassen</h3>
+            <ul class="subnavi">
+              <li><a href="#">Kosten pro Haus</a></li>
+              <li><a href="#">Kosten pro Wohnung</a></li>
+              <li><a href="#">Kosten pro Mieter</a></li>
+            </ul>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <h3>Auswerten</h3>
+            <ul class="subnavi">
+              <li><a href="#">Mieter pro Monat</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="inhalt">
+        <h2>Verwalten - Mieter</h2>
+
+          <?php
+            include 'dbconnect.php';
+            
+            $query = 'SELECT
+                        house.id, house.name
+                      FROM
+                        house
+                      ORDER BY house.name ASC';
+            $result = mysqli_query($db, $query);
+            
+            while($row = mysqli_fetch_object($result)) {
+              echo '<table>
+                      <caption>' . $row->name . '</caption>
+                      <thead>
+                        <tr>
+                          <th id="name">Name</th>
+                          <th id="persons">Personen</th>
+                          <th id="entry">Einzug</th>
+                          <th id="extract">Auszug</th>
+                          <th id="apartment_name">Wohnung</th>
+                        </tr>
+                      </thead>
+                      <tbody>';
+              
+              $query_tenant = 'SELECT
+                                    tenant.id, tenant.name, tenant.persons, tenant.entry, tenant.extract, apartment.name AS apartment_name
+                                  FROM
+                                    tenant
+                                  INNER JOIN
+                                    apartment ON apartment.id = tenant.apartment_id
+                                  WHERE apartment.house_id = ' . $row->id . '
+                                  ORDER BY tenant.extract DESC';
+              $result_tenant = mysqli_query($db, $query_tenant);
+            
+              while($row_tenant = mysqli_fetch_object($result_tenant)) {
+                echo "<tr>\n";
+                echo '<td headers="name">' . $row_tenant->name . "</td>\n";
+                echo '<td headers="persons">' . $row_tenant->persons . "</td>\n";
+                echo '<td headers="entry">' . $row_tenant->entry . "</td>\n";
+                echo '<td headers="extract">' . $row_tenant->extract . "</td>\n";
+                echo '<td headers="apartment_name">' . $row_tenant->apartment_name . "</td>\n";                
+              }
+              
+              echo '</tbody>
+                  </table>';              
+            }
+            mysqli_close($db);
+          ?>
+          
+      </div>
+  </body>
 </html>
