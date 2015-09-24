@@ -9,7 +9,6 @@
   </head>
 
   <body>
-    <div class="rahmen">
       <div class="head">
         <h1>Nebenkostenabrechnung</h1>
       </div>
@@ -45,7 +44,6 @@
       </div>
       <div class="inhalt">
       </div>
-    </div>
   </body>
 </html>
 

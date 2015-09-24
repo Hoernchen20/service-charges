@@ -9,7 +9,6 @@
   </head>
 
   <body>
-    <div class="rahmen">
       <div class="head">
         <h1>Nebenkostenabrechnung</h1>
       </div>
@@ -66,13 +65,12 @@
             while($row = mysqli_fetch_object($result)) {
               echo "<tr>\n";
               echo '<td headers="name">' . $row->name . "</td>\n";
-              echo '<td headers="size">' . $row->size . "</td>\n</tr>\n";
+              echo '<td headers="size">' . $row->size . "m²</td>\n</tr>\n";
             }
             mysqli_close($db);
           ?>
           </tbody>
         </table>
       </div>
-    </div>
   </body>
 </html>

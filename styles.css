@@ -6,7 +6,6 @@
 body {
     font-family: Verdana, Helvetica, Arial, sans-serif;
     font-size: 0.8em;
-    background-color: #d4d4d4;
     }
 
 a {
@@ -56,14 +55,16 @@ div.rahmen {
 
 /* Head */
 div.head {
-    margin: 0px 0px 15px 0px;
+    padding: 0px 0px 15px 10px;
+    background-color: #d4d4d4;
     }
 
 /* Menüleiste oben */
 div.topnavi {
-    width: 1250px;
     height: 25px;
-    float: left;
+    padding: 0px 0px 0px 10px;
+    background-color: #d4d4d4;
+    border-bottom: 2px solid #000;
     }
 
 div.topnavi ul {
@@ -102,7 +103,7 @@ div.topnavi ul li:hover ul {
 
 /* Inhalt */
 div.inhalt {
-    margin: 10px auto;
+    padding: 10px 10px 10px 10px;
     }
 
 div.inhalt td {
@@ -110,7 +111,6 @@ div.inhalt td {
     }
 
 div.inhalt table {
-    margin: 10px auto;
     }
 
 tr:nth-child(odd) {
