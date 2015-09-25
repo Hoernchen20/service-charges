@@ -73,7 +73,7 @@
           </tbody>
         </table>
         <p class="menue">
-          <a href="#" onclick="fenster_new('house_new')">Neues Haus anlegen</a>
+          <a href="#" onclick="fenster('house_new')">Neues Haus anlegen</a>
         </p>
       </div>
   </body>
