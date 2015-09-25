@@ -6,6 +6,7 @@
     <meta name="author" content="Felix Horn">
     <meta http-equiv="language" content="de">
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <script type="text/JavaScript" src="inc/menue.js"></script>
   </head>
 
   <body>
@@ -71,6 +72,9 @@
           ?>
           </tbody>
         </table>
+        <p class="menue">
+          <a href="#" onclick="fenster_new('house_new')">Neues Haus anlegen</a>
+        </p>
       </div>
   </body>
 </html>

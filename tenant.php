@@ -70,7 +70,10 @@
                       <tbody>';
               
               $query_tenant = 'SELECT
-                                    tenant.id, tenant.name, tenant.persons, tenant.entry, tenant.extract, apartment.name AS apartment_name
+                                    tenant.id, tenant.name, tenant.persons,
+                                    DATE_FORMAT(tenant.entry, \'%d.%m.%Y\') AS entry,
+                                    DATE_FORMAT(tenant.extract, \'%d.%m.%Y\') AS extract,
+                                    apartment.name AS apartment_name
                                   FROM
                                     tenant
                                   INNER JOIN
