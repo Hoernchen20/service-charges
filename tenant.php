@@ -6,6 +6,7 @@
     <meta name="author" content="Felix Horn">
     <meta http-equiv="language" content="de">
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <script type="text/JavaScript" src="inc/menue.js"></script>
   </head>
 
   <body>
@@ -92,7 +93,10 @@
               }
               
               echo '</tbody>
-                  </table>';              
+                  </table>';
+              echo '<p class="menue">
+                      <a href="#" onclick="fenster_param(\'tenant_new\',\'' . $row->id . '\')">Neuen Mieter anlegen</a>
+                    </p> ';
             }
             mysqli_close($db);
           ?>
