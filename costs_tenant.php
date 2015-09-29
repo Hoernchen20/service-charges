@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
-    <title>Nebenkostenabrechnung - Wohnung</title>
+    <title>Nebenkostenabrechnung - Kosten pro Mieter</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="author" content="Felix Horn">
     <meta http-equiv="language" content="de">
@@ -45,47 +45,58 @@
         </ul>
       </div>
       <div class="inhalt">
-        <h2>Verwalten - Wohnung</h2>
+        <h2>Verwalten - Kosten pro Mieter</h2>
 
           <?php
             include 'dbconnect.php';
             
             $query = 'SELECT
-                        house.id, house.name
+                        tenant.id, tenant.name, tenant.persons,
+                        DATE_FORMAT(tenant.entry, \'%d.%m.%Y\') AS entry,
+                        DATE_FORMAT(tenant.extract, \'%d.%m.%Y\') AS extract,
+                        apartment.name AS apartment_name
                       FROM
-                        house
-                      ORDER BY house.name ASC';
+                        tenant
+                      INNER JOIN
+                        apartment ON apartment.id = tenant.apartment_id
+                      ORDER BY tenant.extract DESC';
             $result = mysqli_query($db, $query);
             
             while($row = mysqli_fetch_object($result)) {
               echo '<table>
-                      <caption>' . $row->name . '</caption>
+                      <caption>' . $row->name . ' - ' . 
+                        $row->persons . ' Personen - ' . 
+                        $row->entry . ' - ' . $row->extract . ' - ' . 
+                        $row->apartment_name . '</caption>
                       <thead>
                         <tr>
-                          <th id="name">Name</th>
-                          <th id="size">Wohnfläche</th>
+                          <th id="year">Jahr</th>
+                          <th id="usage">Zweck</th>
+                          <th id="amount">Kosten</th>
                         </tr>
                       </thead>
                       <tbody>';
               
               $query_apartment = 'SELECT
-                                    apartment.id, apartment.name, apartment.size
+                                    costs_tenant.id, costs_tenant.year, costs_tenant.usage, costs_tenant.amount
                                   FROM
-                                    apartment
-                                  WHERE apartment.house_id = ' . $row->id . '
-                                  ORDER BY apartment.name DESC';
+                                    costs_tenant
+                                  WHERE costs_tenant.tenant_id = ' . $row->id . '
+                                  ORDER BY costs_tenant.year DESC, costs_tenant.usage ASC';
               $result_apartment = mysqli_query($db, $query_apartment);
             
               while($row_apartment = mysqli_fetch_object($result_apartment)) {
                 echo "<tr>\n";
-                echo '<td headers="name">' . $row_apartment->name . "</td>\n";
-                echo '<td headers="size">' . $row_apartment->size . "m²</td>\n</tr>\n";
+                echo '<td headers="year">' . $row_apartment->year . "</td>\n";
+                echo '<td headers="usage">' . $row_apartment->usage . "</td>\n";
+                echo '<td headers="amount">' . $row_apartment->amount . "</td>\n</tr>\n";
               }
+              
               
               echo '</tbody>
                   </table>';
               echo '<p class="menue">
-                      <a href="#" onclick="fenster_param(\'apartment_new\',\'' . $row->id . '\')">Neue Wohnung anlegen</a>
+                      <a href="#" onclick="fenster_param(\'costs_tenant_new\',\'' . $row->id . '\')">Neue Kosten pro Mieter erfassen</a>
                     </p> ';
             }
             mysqli_close($db);

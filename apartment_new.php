@@ -10,12 +10,27 @@
   <?php
     include 'dbconnect.php';
     $result = FALSE;
+    
     if ($_POST) {
+      /* 
+       * Check input */
+      $post_name = mysqli_real_escape_string($db, $_POST['name']);
+      
+      if ( !(is_numeric($_POST['size'])) ) {
+        exit('Fehler: Wohnfläche');
+      }
+      
+      /*
+       * Check $_GET['param'] */
+      if ( !(ctype_digit($_GET['param'])) ) {
+        exit('Error: Param');
+      }
+      
       $query = 'INSERT INTO
                   apartment
                 VALUES (\'\',\'' .
                   $_GET['param'] . '\',\'' .
-                  $_POST['name'] . '\',\'' .
+                  $post_name . '\',\'' .
                   $_POST['size'] . '\')';
       $result = mysqli_real_query($db, $query);
       mysqli_close($db);

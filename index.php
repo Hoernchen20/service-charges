@@ -20,6 +20,9 @@
               <li><a href="house.php">Haus</a></li>
               <li><a href="apartment.php">Wohnung</a></li>
               <li><a href="tenant.php">Mieter</a></li>
+              <li><a href="costs_house.php">Kosten pro Haus</a></li>
+              <li><a href="costs_person.php">Kosten pro Person</a></li>
+              <li><a href="costs_tenant.php">Kosten pro Mieter</a></li>
             </ul>
           </li>
         </ul>
@@ -27,9 +30,7 @@
           <li>
             <h3>Erfassen</h3>
             <ul class="subnavi">
-              <li><a href="#">Kosten pro Haus</a></li>
-              <li><a href="#">Kosten pro Wohnung</a></li>
-              <li><a href="#">Kosten pro Mieter</a></li>
+              
             </ul>
           </li>
         </ul>
@@ -37,7 +38,8 @@
           <li>
             <h3>Auswerten</h3>
             <ul class="subnavi">
-              <li><a href="#">Mieter pro Monat</a></li>
+              <li><a href="analysis_tenant_month.php">Mieter pro Monat</a></li>
+              <li><a href="analysis_apartment_month.php">Wohnung pro Monat</a></li>
             </ul>
           </li>
         </ul>

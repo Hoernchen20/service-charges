@@ -110,10 +110,11 @@ div.inhalt td {
     }
 
 div.inhalt table {
-    margin: 10px 0px;
+    width: 700px;
+    margin: 50px 0px 0px 0px;
     }
 div.inhalt table caption {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
     }
     

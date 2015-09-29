@@ -10,11 +10,20 @@
   <?php
     include 'dbconnect.php';
     $result = FALSE;
+    
     if ($_POST) {
+      /* 
+       * Check input */
+      $post_name = mysqli_real_escape_string($db, $_POST['name']);
+      
+      if ( !(is_numeric($_POST['size'])) ) {
+        exit('Fehler: Wohnfläche');
+      }
+      
       $query = 'INSERT INTO
                   house
                 VALUES (\'\',\'' .
-                  $_POST['name'] . '\',\'' .
+                  $post_name . '\',\'' .
                   $_POST['size'] . '\')';
       $result = mysqli_real_query($db, $query);
       mysqli_close($db);

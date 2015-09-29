@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
-    <title>Nebenkostenabrechnung - Wohnung</title>
+    <title>Nebenkostenabrechnung - Kosten pro Haus</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="author" content="Felix Horn">
     <meta http-equiv="language" content="de">
@@ -45,7 +45,7 @@
         </ul>
       </div>
       <div class="inhalt">
-        <h2>Verwalten - Wohnung</h2>
+        <h2>Verwalten - Kosten pro Haus</h2>
 
           <?php
             include 'dbconnect.php';
@@ -62,30 +62,32 @@
                       <caption>' . $row->name . '</caption>
                       <thead>
                         <tr>
-                          <th id="name">Name</th>
-                          <th id="size">Wohnfläche</th>
+                          <th id="year">Jahr</th>
+                          <th id="usage">Zweck</th>
+                          <th id="amount">Kosten</th>
                         </tr>
                       </thead>
                       <tbody>';
               
               $query_apartment = 'SELECT
-                                    apartment.id, apartment.name, apartment.size
+                                    costs_house.id, costs_house.year, costs_house.usage, costs_house.amount
                                   FROM
-                                    apartment
-                                  WHERE apartment.house_id = ' . $row->id . '
-                                  ORDER BY apartment.name DESC';
+                                    costs_house
+                                  WHERE costs_house.house_id = ' . $row->id . '
+                                  ORDER BY costs_house.year DESC, costs_house.usage ASC';
               $result_apartment = mysqli_query($db, $query_apartment);
             
               while($row_apartment = mysqli_fetch_object($result_apartment)) {
                 echo "<tr>\n";
-                echo '<td headers="name">' . $row_apartment->name . "</td>\n";
-                echo '<td headers="size">' . $row_apartment->size . "m²</td>\n</tr>\n";
+                echo '<td headers="year">' . $row_apartment->year . "</td>\n";
+                echo '<td headers="usage">' . $row_apartment->usage . "</td>\n";
+                echo '<td headers="amount">' . $row_apartment->amount . "</td>\n</tr>\n";
               }
               
               echo '</tbody>
                   </table>';
               echo '<p class="menue">
-                      <a href="#" onclick="fenster_param(\'apartment_new\',\'' . $row->id . '\')">Neue Wohnung anlegen</a>
+                      <a href="#" onclick="fenster_param(\'costs_house_new\',\'' . $row->id . '\')">Neue Kosten pro Haus erfassen</a>
                     </p> ';
             }
             mysqli_close($db);

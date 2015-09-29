@@ -8,20 +8,52 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
   </head>
   <?php
+    include 'inc/php_functions.php';
     include 'dbconnect.php';
     $result = FALSE;
+    
     if ($_POST) {
+      /* 
+       * Check input */
+      $post_name = mysqli_real_escape_string($db, $_POST['name']);
+      
+      if ( !(ctype_digit($_POST['persons'])) || !($_POST['persons'] < 11) ) {
+        exit('Fehler: Personen');
+      }
+      
+      $post_entry = strtodate($_POST['entry']);
+      if ( ($post_entry == false) || ($post_entry == 'NULL') ) {
+        exit('Fehler: Einzugsdatum');
+      }
+      
+      $post_extract = strtodate($_POST['extract']);
+      if ($post_extract == false) {
+        exit('Fehler: Auszugsdatum');
+      }
+      
+      if ( !(ctype_digit($_POST['apartment_id'])) ) {
+        exit('Fehler: Wohnung');
+      }
+      
+      /*
+       * Put in database */
       $query = 'INSERT INTO
                   tenant
                 VALUES (\'\',\'' .
-                  $_POST['name'] . '\',\'' .
-                  $_POST['persons'] . '\',\'' .
-                  $_POST['entry'] . '\',\'' .
-                  $_POST['extract'] . '\',\'' .
+                  $post_name . '\',\'' .
+                  $_POST['persons'] . '\',' .
+                  $post_entry . ',' .
+                  $post_extract . ',\'' .
                   $_POST['apartment_id'] . '\')';
       $result = mysqli_real_query($db, $query);
     }
     
+    /*
+     * Check $_GET['param'] */
+    if ( !(ctype_digit($_GET['param'])) ) {
+      exit('Error: Param');
+    }
+      
     $query_apartment = 'SELECT
                             apartment.id, apartment.name
                           FROM
@@ -44,25 +76,23 @@
       <div class="inhalt">
         <form action="tenant_new.php?param=<?php echo $_GET['param']; ?>" method="post">
           <p>
-            <label for="name">Name</label>
+            <label for="name">Name:</label>
             <input type="text" name="name" class="feld" />
           </p>
           <p>
-            <label for="persons">Personen</label>
+            <label for="persons">Personen:</label>
             <input type="text" name="persons" class="feld" />
           </p>
           <p>
-            <label for="entry">Einzug</label>
+            <label for="entry">Einzug (TT.MM.YYYY):</label>
             <input type="text" name="entry" class="feld" />
           </p>
           <p>
-            <label for="extract">Auszug</label>
+            <label for="extract">Auszug (TT.MM.YYYY):</label>
             <input type="text" name="extract" class="feld" />
           </p>
-          <!-- Auswahlfeld für Wohnung 
-          ein <select> über php mit daten aus der tabelle generieren-->
           <p>
-            <label for="apartment_id">Wohnung</label>
+            <label for="apartment_id">Wohnung:</label>
             <select name="apartment_id">
               <?php
                 while($row_apartment = mysqli_fetch_object($result_apartment)) {
