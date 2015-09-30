@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
   </head>
   <?php
-    include 'dbconnect.php';
+    include 'inc/dbconnect.inc.php';
     $result = FALSE;
     
     if ($_POST) {
@@ -35,24 +35,24 @@
     } 
     echo '>';
   ?>
-      <div class="head">
-        <h1>Neues Haus anlegen</h1>
-      </div>
-      <div class="inhalt">
-        <form action="house_new.php" method="post">
-          <p>
-            <label for="name">Name</label>
-            <input type="text" name="name" class="feld" />
-          </p>
-          <p>
-            <label for="size">Wohnfläche</label>
-            <input type="text" name="size" class="feld" />
-          </p>
-          <p style="text-align: center">
-            <input type="submit" value="Eingeben" />
-          </p>
-        </form>
-      </div>
+    <div class="head">
+      <h1>Neues Haus anlegen</h1>
+    </div>
+    <div class="inhalt">
+      <form action="house_new.php" method="post">
+        <p>
+          <label for="name">Name:</label>
+          <input type="text" name="name" class="feld" />
+        </p>
+        <p>
+          <label for="size">Wohnfläche (x.xx):</label>
+          <input type="text" name="size" class="feld" />
+        </p>
+        <p style="text-align: center">
+          <input type="submit" value="Eingeben" />
+        </p>
+      </form>
+    </div>
   </body>
 </html>
 

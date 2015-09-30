@@ -8,8 +8,8 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
   </head>
   <?php
-    include 'inc/php_functions.php';
-    include 'dbconnect.php';
+    include 'inc/php_functions.inc.php';
+    include 'inc/dbconnect.inc.php';
     $result = FALSE;
     
     if ($_POST) {
@@ -55,11 +55,11 @@
     }
       
     $query_apartment = 'SELECT
-                            apartment.id, apartment.name
-                          FROM
-                            apartment
-                          WHERE apartment.house_id =' . $_GET['param'] .
-                          ' ORDER BY apartment.name ASC';
+                          apartment.id, apartment.name
+                        FROM
+                          apartment
+                        WHERE apartment.house_id =' . $_GET['param'] . '
+                        ORDER BY apartment.name ASC';
     $result_apartment = mysqli_query($db, $query_apartment);
     
     mysqli_close($db);
@@ -70,42 +70,41 @@
     } 
     echo '>';
   ?>
-      <div class="head">
-        <h1>Neuen Mieter anlegen</h1>
-      </div>
-      <div class="inhalt">
-        <form action="tenant_new.php?param=<?php echo $_GET['param']; ?>" method="post">
-          <p>
-            <label for="name">Name:</label>
-            <input type="text" name="name" class="feld" />
-          </p>
-          <p>
-            <label for="persons">Personen:</label>
-            <input type="text" name="persons" class="feld" />
-          </p>
-          <p>
-            <label for="entry">Einzug (TT.MM.YYYY):</label>
-            <input type="text" name="entry" class="feld" />
-          </p>
-          <p>
-            <label for="extract">Auszug (TT.MM.YYYY):</label>
-            <input type="text" name="extract" class="feld" />
-          </p>
-          <p>
-            <label for="apartment_id">Wohnung:</label>
-            <select name="apartment_id">
-              <?php
-                while($row_apartment = mysqli_fetch_object($result_apartment)) {
-                  echo '<option value="' . $row_apartment->id . '">' . $row_apartment->name ."</option>\n";
-                }
-              ?>
-            </select>
-          </p>
-          <p style="text-align: center">
-            <input type="submit" value="Eingeben" />
-          </p>
-        </form>
-      </div>
+    <div class="head">
+      <h1>Neuen Mieter anlegen</h1>
+    </div>
+    <div class="inhalt">
+      <form action="tenant_new.php?param=<?php echo $_GET['param']; ?>" method="post">
+        <p>
+          <label for="name">Name:</label>
+          <input type="text" name="name" class="feld" />
+        </p>
+        <p>
+          <label for="persons">Personen:</label>
+          <input type="text" name="persons" class="feld" />
+        </p>
+        <p>
+          <label for="entry">Einzug (TT.MM.YYYY):</label>
+          <input type="text" name="entry" class="feld" />
+        </p>
+        <p>
+          <label for="extract">Auszug (TT.MM.YYYY):</label>
+          <input type="text" name="extract" class="feld" />
+        </p>
+        <p>
+          <label for="apartment_id">Wohnung:</label>
+          <select name="apartment_id">
+          <?php
+            while($row_apartment = mysqli_fetch_object($result_apartment)) {
+              echo '<option value="' . $row_apartment->id . '">' . $row_apartment->name ."</option>\n";
+            }
+          ?>
+          </select>
+        </p>
+        <p style="text-align: center">
+          <input type="submit" value="Eingeben" />
+        </p>
+      </form>
+    </div>
   </body>
 </html>
-

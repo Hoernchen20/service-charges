@@ -6,7 +6,7 @@
     <meta name="author" content="Felix Horn">
     <meta http-equiv="language" content="de">
     <link rel="stylesheet" type="text/css" href="styles.css">
-    <script type="text/JavaScript" src="inc/menue.js"></script>
+    <script type="text/JavaScript" src="inc/menue.inc.js"></script>
   </head>
 
   <body>
@@ -48,7 +48,7 @@
         <h2>Verwalten - Kosten pro Mieter</h2>
 
           <?php
-            include 'dbconnect.php';
+            include 'inc/dbconnect.inc.php';
             
             $query = 'SELECT
                         tenant.id, tenant.name, tenant.persons,

@@ -5,20 +5,20 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="author" content="Felix Horn">
     <meta http-equiv="language" content="de">
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" type="text/css" href="inc/styles.inc.css">
   </head>
   <?php
-    include 'dbconnect.php';
+    include 'inc/dbconnect.inc.php';
     $result = FALSE;
     
     if ($_POST) {
       /* 
        * Check input */
-      $post_usage = mysqli_real_escape_string($db, $_POST['usage']);
-      
-      if ( !(ctype_digit($_POST['year'])) ) {
+      if ( !(ctype_digit($_POST['year'])) || $_POST['year'] < 1970 || $_POST['year'] > 2100 || strlen($_POST['year']) != 4) {
         exit('Fehler: Jahr');
       }
+       
+      $post_usage = mysqli_real_escape_string($db, $_POST['usage']);      
       
       if ( !(is_numeric($_POST['amount'])) ) {
         exit('Fehler: Kosten');
@@ -47,28 +47,28 @@
     } 
     echo '>';
   ?>
-      <div class="head">
-        <h1>Neue Kosten pro Haus erfassen</h1>
-      </div>
-      <div class="inhalt">
-        <form action="costs_house_new.php?param=<?php echo $_GET['param']; ?>" method="post">
-          <p>
-            <label for="year">Jahr</label>
-            <input type="text" name="year" class="feld" />
-          </p>
-          <p>
-            <label for="usage">Zweck</label>
-            <input type="text" name="usage" class="feld" />
-          </p>
-          <p>
-            <label for="amount">Kosten</label>
-            <input type="text" name="amount" class="feld" />
-          </p>
-          <p style="text-align: center">
-            <input type="submit" value="Eingeben" />
-          </p>
-        </form>
-      </div>
+    <div class="head">
+      <h1>Neue Kosten pro Haus erfassen</h1>
+    </div>
+    <div class="inhalt">
+      <form action="costs_house_new.php?param=<?php echo $_GET['param']; ?>" method="post">
+        <p>
+          <label for="year">Jahr (JJJJ):</label>
+          <input type="text" name="year" class="feld" />
+        </p>
+        <p>
+          <label for="usage">Zweck:</label>
+          <input type="text" name="usage" class="feld" />
+        </p>
+        <p>
+          <label for="amount">Kosten:</label>
+          <input type="text" name="amount" class="feld" />
+        </p>
+        <p style="text-align: center">
+          <input type="submit" value="Eingeben" />
+        </p>
+      </form>
+    </div>
   </body>
 </html>
 
