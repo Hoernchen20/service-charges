@@ -5,7 +5,7 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="author" content="Felix Horn">
     <meta http-equiv="language" content="de">
-    <link rel="stylesheet" type="text/css" href="inc/styles.inc.css">
+    <link rel="stylesheet" type="text/css" href="styles.css">
   </head>
   <?php
     include 'inc/dbconnect.inc.php';
@@ -21,7 +21,13 @@
       $post_usage = mysqli_real_escape_string($db, $_POST['usage']);      
       
       if ( !(is_numeric($_POST['amount'])) ) {
-        exit('Fehler: Kosten');
+        if ( ctype_digit(str_replace(',', '', $_POST['amount'])) ) {
+          $amount = str_replace(',', '.', $_POST['amount']);
+        } else {
+          exit('Fehler: Kosten');
+        }
+      } else {
+        $amount = $_POST['amount'];
       }
       
       /*
@@ -35,7 +41,7 @@
                 VALUES (\'\',\'' .
                   $_POST['year'] . '\',\'' .
                   $post_usage . '\',\'' .
-                  $_POST['amount'] . '\',\'' .
+                  $amount . '\',\'' .
                   $_GET['param'] . '\')';
       $result = mysqli_real_query($db, $query);
       mysqli_close($db);

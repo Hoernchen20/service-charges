@@ -18,6 +18,8 @@
       
       if ( !(is_numeric($_POST['size'])) ) {
         exit('Fehler: Wohnfläche');
+      } else {
+        $size = str_replace(',', '.', $_POST['size']);
       }
       
       /*
@@ -31,7 +33,7 @@
                 VALUES (\'\',\'' .
                   $_GET['param'] . '\',\'' .
                   $post_name . '\',\'' .
-                  $_POST['size'] . '\')';
+                  $size . '\')';
       $result = mysqli_real_query($db, $query);
       mysqli_close($db);
     }
@@ -52,7 +54,7 @@
           <input type="text" name="name" class="feld" />
         </p>
         <p>
-          <label for="size">Wohnfläche (x.xx):</label>
+          <label for="size">Wohnfläche:</label>
           <input type="text" name="size" class="feld" />
         </p>
         <p style="text-align: center">

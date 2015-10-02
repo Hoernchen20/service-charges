@@ -22,6 +22,8 @@
       
       if ( !(is_numeric($_POST['amount'])) ) {
         exit('Fehler: Kosten');
+      }  else {
+        $amount = str_replace(',', '.', $_POST['amount']);
       }
       
       /*
@@ -35,7 +37,7 @@
                 VALUES (\'\',\'' .
                   $_POST['year'] . '\',\'' .
                   $post_usage . '\',\'' .
-                  $_POST['amount'] . '\',\'' .
+                  $amount . '\',\'' .
                   $_GET['param'] . '\')';
       $result = mysqli_real_query($db, $query);
       mysqli_close($db);
