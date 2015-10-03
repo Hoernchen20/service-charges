@@ -5,7 +5,7 @@
     
 body {
     font-family: Verdana, Helvetica, Arial, sans-serif;
-    font-size: 0.8em;
+    font-size: 13px;
     }
 
 a {
@@ -13,27 +13,21 @@ a {
     }
 
 h1 {
-    font-size: 22px;
+    font-size: 1.5em;
     margin-top: 0px;
     margin-bottom: 5px;
     color: #ff;
     }
 
 h2 {
-    font-size: 16px;
+    font-size: 1.3em;
     margin-top: 0px;
     margin-bottom: 5px;
     color: #002274;
     }
 
 h3 {
-    font-size: 12px;
-    margin-bottom: 5px;
-    }
-
-h4 {
-    font-size: 11px;
-    margin-top: 0px;
+    font-size: 1.1em;
     margin-bottom: 5px;
     }
 
@@ -106,15 +100,15 @@ div.inhalt {
     }
 
 div.inhalt td {
-    text-align: center;
+    text-align: left;
     }
 
 div.inhalt table {
     width: 800px;
-    margin: 50px 0px 0px 0px;
+    margin-bottom: 40px;
     }
+    
 div.inhalt table caption {
-    font-size: 14px;
     font-weight: bold;
     }
     

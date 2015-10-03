@@ -66,7 +66,14 @@
                       <th id="change">Ändern</th>
                     </tr>
                   </thead>
-                 <tbody>';
+                  <tfoot>
+                    <tr>
+                      <td headers="name" colspan="3">
+                        <a href="#" onclick="fenster_param(\'apartment_new\',\'' . $row->id . '\')">Neue Wohnung anlegen</a>
+                      </td>
+                    </tr>
+                  </tfoot>
+                  <tbody>';
               
           $query_apartment = 'SELECT
                                 apartment.id, apartment.name, apartment.size
@@ -82,12 +89,8 @@
             echo '<td headers="size">' . $row_apartment->size . "m²</td>\n";
             echo '<td headers="change"><a href="#" onclick="fenster_param(\'apartment_change\', \'' . $row_apartment->id . "')\">Ändern</a></td>\n</tr>\n";
           }
-              
           echo '</tbody>
               </table>';
-          echo '<p class="menue">
-                  <a href="#" onclick="fenster_param(\'apartment_new\',\'' . $row->id . '\')">Neue Wohnung anlegen</a>
-                </p> ';
         }
         mysqli_close($db);
       ?>

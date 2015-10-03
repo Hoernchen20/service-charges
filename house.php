@@ -53,6 +53,11 @@
             <th id="change">Ändern</th>
           </tr>
         </thead>
+        <tfoot>
+          <tr>
+            <td headers="name" colspan="3"><a href="#" onclick="fenster('house_new')">Neues Haus anlegen</a></td>
+          </tr>
+        </tfoot>
         <tbody>
         <?php
           include 'inc/dbconnect.inc.php';
@@ -74,9 +79,6 @@
         ?>
         </tbody>
       </table>
-      <p class="menue">
-        <a href="#" onclick="fenster('house_new')">Neues Haus anlegen</a>
-      </p>
     </div>
   </body>
 </html>

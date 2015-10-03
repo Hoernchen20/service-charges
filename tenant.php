@@ -69,6 +69,13 @@
                       <th id="change">Ändern</th>
                     </tr>
                   </thead>
+                  <tfoot>
+                    <tr>
+                      <td headers="name" colspan="6">
+                        <a href="#" onclick="fenster_param(\'tenant_new\',\'' . $row->id . '\')">Neuen Mieter anlegen</a>
+                      </td>
+                    </tr>
+                  </tfoot>
                   <tbody>';
              
           $query_tenant = 'SELECT
@@ -96,9 +103,6 @@
             
           echo '</tbody>
               </table>';
-          echo '<p class="menue">
-                  <a href="#" onclick="fenster_param(\'tenant_new\',\'' . $row->id . '\')">Neuen Mieter anlegen</a>
-                </p> ';
         }
         mysqli_close($db);
       ?>   

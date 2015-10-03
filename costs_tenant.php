@@ -74,6 +74,13 @@
                       <th id="change">Ändern</th>
                     </tr>
                   </thead>
+                  <tfoot>
+                    <tr>
+                      <td headers="name" colspan="4">
+                        <a href="#" onclick="fenster_param(\'costs_tenant_new\',\'' . $row_tenant->id . '\')">Neue Kosten pro Mieter erfassen</a>
+                      </td>
+                    </tr>
+                  </tfoot>
                   <tbody>';
               
           $query_costs = 'SELECT
@@ -94,9 +101,6 @@
 
           echo '</tbody>
               </table>';
-          echo '<p class="menue">
-                  <a href="#" onclick="fenster_param(\'costs_tenant_new\',\'' . $row_tenant->id . '\')">Neue Kosten pro Mieter erfassen</a>
-                </p> ';
         }
         mysqli_close($db);
       ?>
