@@ -47,9 +47,20 @@
     <div class="inhalt">
     <?php
       include 'inc/dbconnect.inc.php';
+      
+      /*
+       * Check $_GET */
+      if ( !(ctype_digit($_GET['year'])) ) {
+        exit('Error: Param');
+      } else {
+        $get_year = $_GET['year'];
+      }
         
-      $get_year = $_GET['year'];
-      $get_apartment_id = $_GET['apartment_id'];
+      if ( !(ctype_digit($_GET['apartment_id'])) ) {
+        exit('Error: Param');
+      } else {
+        $get_apartment_id = $_GET['apartment_id'];
+      }
           
       $query = 'SELECT
                   apartment.name AS apartment_name, house.name AS house_name,
@@ -142,9 +153,12 @@
         }
               
         /*
-         * Tabelle für Kosten pro Haus ausgeben */
+         * Tabelle für Kosten ausgeben 
+         * 
+         * Kosten pro Haus */
+         
         echo '<table>
-                <caption>Kosten pro Haus</caption>
+                <caption>Kosten</caption>
                 <thead>
                   <tr>
                     <th id="usage">Zweck</th>
@@ -174,23 +188,9 @@
           echo '<td headers="percent">' . $apartment_percent . "%</td>\n";
           echo '<td headers="sum">' . round(($row_costs_house->amount/100*$apartment_percent/12), 2) . "€</td>\n</tr>\n";
         }
-        echo '</tbody>
-            </table>';
-             
-        /*
-         * Tabelle für Kosten pro Person ausgeben */
-        echo '<table>
-                <caption>Kosten pro Person</caption>
-                <thead>
-                  <tr>
-                    <th id="usage">Zweck</th>
-                    <th id="amount">Kosten</th>
-                    <th id="percent">Anteil</th>
-                    <th id="sum">Summe</th>
-                  </tr>
-                </thead>
-                <tbody>';
-              
+
+        /* 
+         * Kosten pro Person */
         $query_costs_person = 'SELECT
                                  costs_person.usage, costs_person.amount
                                FROM
@@ -211,21 +211,12 @@
           echo '<td headers="percent">' . $persons_percent . "%</td>\n";
           echo '<td headers="sum">' . round(($row_costs_person->amount/100*$persons_percent/12), 2) . "€</td>\n</tr>\n";
         }
-        echo '</tbody>
-            </table>';
-                  
+
         /*
-         * Tabelle für Kosten pro Mieter ausgeben */
-        echo '<table>
-                <caption>Kosten pro Mieter</caption>
-                <thead>
-                  <tr>
-                    <th id="usage">Zweck</th>
-                    <th id="amount">Kosten</th>
-                  </tr>
-                </thead>
-                <tbody>';
-              
+         * Kosten pro Mieter 
+         * 
+         * Abfragen, wie viele Monate der Mieter in der Wohnung gewohnt hat,
+         * um die Kosten pro Mieter auf einen einzelnen Monat runter zurechnen */
         $query_tenant_month = 'SELECT
                                  YEAR( tenant.entry ) AS entry_year, MONTH( tenant.entry ) AS entry_month,
                                  YEAR( tenant.extract ) AS extract_year, MONTH( tenant.extract ) AS extract_month
@@ -256,6 +247,8 @@
           echo "<tr>\n";
           echo '<td headers="usage">' . $row_costs_tenant->usage . "</td>\n";
           echo '<td headers="amount">' . $row_costs_tenant->amount/$tenant_month . "€</td>\n";
+          echo "<td headers=\"percent\">100%</td>\n";
+          echo '<td headers="sum">' . $row_costs_tenant->amount/$tenant_month . "€</td>\n</tr>\n";
         }
         echo '</tbody>
             </table>';
