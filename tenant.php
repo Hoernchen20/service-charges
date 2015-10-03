@@ -66,6 +66,7 @@
                       <th id="entry">Einzug</th>
                       <th id="extract">Auszug</th>
                       <th id="apartment_name">Wohnung</th>
+                      <th id="change">Ändern</th>
                     </tr>
                   </thead>
                   <tbody>';
@@ -89,7 +90,8 @@
             echo '<td headers="persons">' . $row_tenant->persons . "</td>\n";
             echo '<td headers="entry">' . $row_tenant->entry . "</td>\n";
             echo '<td headers="extract">' . $row_tenant->extract . "</td>\n";
-            echo '<td headers="apartment_name">' . $row_tenant->apartment_name . "</td>\n";                
+            echo '<td headers="apartment_name">' . $row_tenant->apartment_name . "</td>\n";
+            echo '<td headers="change"><a href="#" onclick="fenster_two_param(\'tenant_change\',\'' . $row->id . '\',\'' . $row_tenant->id . "')\">Ändern</a></td>\n</tr>\n";                
           }
             
           echo '</tbody>

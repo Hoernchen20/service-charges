@@ -49,44 +49,46 @@
       <?php
         include 'inc/dbconnect.inc.php';
             
-        $query = 'SELECT
+        $query_house = 'SELECT
                     house.id, house.name
                   FROM
                     house
                   ORDER BY house.name ASC';
-        $result = mysqli_query($db, $query);
+        $result_house = mysqli_query($db, $query_house);
 
-        while($row = mysqli_fetch_object($result)) {
+        while($row_house = mysqli_fetch_object($result_house)) {
           echo '<table>
-                  <caption>' . $row->name . '</caption>
+                  <caption>' . $row_house->name . '</caption>
                   <thead>
                     <tr>
                       <th id="year">Jahr</th>
                       <th id="usage">Zweck</th>
                       <th id="amount">Kosten</th>
+                      <th id="change">Ändern</th>
                     </tr>
                   </thead>
                   <tbody>';
               
-          $query_apartment = 'SELECT
+          $query_costs = 'SELECT
                                 costs_house.id, costs_house.year, costs_house.usage, costs_house.amount
                               FROM
                                 costs_house
-                              WHERE costs_house.house_id = ' . $row->id . '
+                              WHERE costs_house.house_id = ' . $row_house->id . '
                               ORDER BY costs_house.year DESC, costs_house.usage ASC';
-          $result_apartment = mysqli_query($db, $query_apartment);
+          $result_costs = mysqli_query($db, $query_costs);
             
-          while($row_apartment = mysqli_fetch_object($result_apartment)) {
+          while($row_costs = mysqli_fetch_object($result_costs)) {
             echo "<tr>\n";
-            echo '<td headers="year">' . $row_apartment->year . "</td>\n";
-            echo '<td headers="usage">' . $row_apartment->usage . "</td>\n";
-            echo '<td headers="amount">' . $row_apartment->amount . "</td>\n</tr>\n";
+            echo '<td headers="year">' . $row_costs->year . "</td>\n";
+            echo '<td headers="usage">' . $row_costs->usage . "</td>\n";
+            echo '<td headers="amount">' . $row_costs->amount . "</td>\n";
+            echo '<td headers="change"><a href="#" onclick="fenster_param(\'costs_house_change\', \'' . $row_costs->id . "')\">Ändern</a></td>\n</tr>\n";
           }
     
           echo '</tbody>
               </table>';
           echo '<p class="menue">
-                  <a href="#" onclick="fenster_param(\'costs_house_new\',\'' . $row->id . '\')">Neue Kosten pro Haus erfassen</a>
+                  <a href="#" onclick="fenster_param(\'costs_house_new\',\'' . $row_house->id . '\')">Neue Kosten pro Haus erfassen</a>
                 </p> ';
         }
         mysqli_close($db);

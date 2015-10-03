@@ -63,6 +63,7 @@
                     <tr>
                       <th id="name">Name</th>
                       <th id="size">Wohnfläche</th>
+                      <th id="change">Ändern</th>
                     </tr>
                   </thead>
                  <tbody>';
@@ -78,7 +79,8 @@
           while($row_apartment = mysqli_fetch_object($result_apartment)) {
             echo "<tr>\n";
             echo '<td headers="name">' . $row_apartment->name . "</td>\n";
-            echo '<td headers="size">' . $row_apartment->size . "m²</td>\n</tr>\n";
+            echo '<td headers="size">' . $row_apartment->size . "m²</td>\n";
+            echo '<td headers="change"><a href="#" onclick="fenster_param(\'apartment_change\', \'' . $row_apartment->id . "')\">Ändern</a></td>\n</tr>\n";
           }
               
           echo '</tbody>
