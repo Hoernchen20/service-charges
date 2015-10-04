@@ -112,6 +112,24 @@ div.inhalt table caption {
     font-weight: bold;
     }
     
-tr:nth-child(odd) {
+div.inhalt table tr:nth-child(odd) {
     background-color: #e4ebf2;
+    }
+
+div.inhalt table.analysis {
+    text-align: left;
+    margin-top: 10px;
+    }
+
+div.inhalt table.analysis td {
+    padding: 0px;
+    }
+    
+div.inhalt table.analysis tr {
+    background-color: transparent;
+    }
+    
+div.inhalt table.analysis td.sum {
+    border-top: 2px solid #000;
+    padding-top: 5px;
     }

@@ -23,6 +23,7 @@
             <li><a href="costs_house.php">Kosten pro Haus</a></li>
             <li><a href="costs_person.php">Kosten pro Person</a></li>
             <li><a href="costs_tenant.php">Kosten pro Mieter</a></li>
+            <li><a href="payment.php">Zahlungen</a></li>
           </ul>
         </li>
       </ul>

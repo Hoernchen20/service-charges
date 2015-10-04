@@ -5,7 +5,8 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta name="author" content="Felix Horn">
     <meta http-equiv="language" content="de">
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" media="screen" type="text/css" href="styles.css">
+    <link rel="stylesheet" media="print" type="text/css" href="printer.css">
     <script type="text/JavaScript" src="inc/menue.inc.js"></script>
   </head>
   <body>
@@ -23,6 +24,7 @@
             <li><a href="costs_house.php">Kosten pro Haus</a></li>
             <li><a href="costs_person.php">Kosten pro Person</a></li>
             <li><a href="costs_tenant.php">Kosten pro Mieter</a></li>
+            <li><a href="payment.php">Zahlungen</a></li>
           </ul>
         </li>
       </ul>
@@ -66,7 +68,7 @@
                   apartment.name AS apartment_name, house.name AS house_name,
                   apartment.size AS apartment_size, house.size AS house_size,
                   house.id,
-                  ROUND((apartment.size * 100 / house.size ), 2) AS apartment_percent
+                  (apartment.size * 100 / house.size) AS apartment_percent
                 FROM
                   apartment
                 RIGHT JOIN
@@ -147,18 +149,18 @@
         $result = mysqli_query($db, $query);
         while($row = mysqli_fetch_object($result)) {
           $tenant_id = $row->id;
-          $persons_percent = round(($row->persons/$sum_persons*100), 2);
-          echo '<p>Mieter: ' . $row->name . '<br>Personen: ' . $row->persons . ' von ' . $sum_persons . ' (' . $persons_percent . '%)<br>Wohnfläche: ' . 
-            $apartment_size . 'm² von ' . $house_size . 'm² (' . $apartment_percent . "%)</p>\n";
+          $persons_percent = $row->persons/$sum_persons*100;
+          echo '<p>Mieter: ' . $row->name . '<br>Personen: ' . $row->persons . ' von ' . $sum_persons . ' (' . number_format($persons_percent, 2, ',', '') . '
+            %)<br>Wohnfläche: ' . $apartment_size . 'm² von ' . $house_size . 'm² (' . number_format($apartment_percent, 2, ',', '') . "%)</p>\n";
         }
               
         /*
          * Tabelle für Kosten ausgeben 
          * 
          * Kosten pro Haus */
+        $costs_sum = 0;
          
-        echo '<table>
-                <caption>Kosten</caption>
+        echo '<table class="analysis">
                 <thead>
                   <tr>
                     <th id="usage">Zweck</th>
@@ -182,11 +184,13 @@
                                 
         $result_costs_house = mysqli_query($db, $query_costs_house);
         while($row_costs_house = mysqli_fetch_object($result_costs_house)) {
+          $sum = $row_costs_house->amount/100*$apartment_percent/12;
+          $costs_sum += $sum;
           echo "<tr>\n";
           echo '<td headers="usage">' . $row_costs_house->usage . "</td>\n";
-          echo '<td headers="amount">' . $row_costs_house->amount . "€</td>\n";
-          echo '<td headers="percent">' . $apartment_percent . "%</td>\n";
-          echo '<td headers="sum">' . round(($row_costs_house->amount/100*$apartment_percent/12), 2) . "€</td>\n</tr>\n";
+          echo '<td headers="amount">' . number_format($row_costs_house->amount, 2, ',', '') . "€</td>\n";
+          echo '<td headers="percent">' . number_format($apartment_percent, 2, ',', '') . "%</td>\n";
+          echo '<td headers="sum">' . number_format($sum, 2, ',', '') . "€</td>\n</tr>\n";          
         }
 
         /* 
@@ -205,11 +209,13 @@
                                 
         $result_costs_person = mysqli_query($db, $query_costs_person);
         while($row_costs_person = mysqli_fetch_object($result_costs_person)) {
+          $sum = $row_costs_person->amount/100*$persons_percent/12;
+          $costs_sum += $sum;
           echo "<tr>\n";
           echo '<td headers="usage">' . $row_costs_person->usage . "</td>\n";
-          echo '<td headers="amount">' . $row_costs_person->amount . "€</td>\n";
-          echo '<td headers="percent">' . $persons_percent . "%</td>\n";
-          echo '<td headers="sum">' . round(($row_costs_person->amount/100*$persons_percent/12), 2) . "€</td>\n</tr>\n";
+          echo '<td headers="amount">' . number_format($row_costs_person->amount, 2, ',', '') . "€</td>\n";
+          echo '<td headers="percent">' . number_format($persons_percent, 2, ',', '') . "%</td>\n";
+          echo '<td headers="sum">' . number_format($sum, 2, ',', '') . "€</td>\n</tr>\n";
         }
 
         /*
@@ -230,7 +236,10 @@
           }
           if ($row_tenant_month->entry_year == $get_year) {
             $tenant_month = $row_tenant_month->entry_month;
-          }                
+          } 
+          if ($row_tenant_month->extract_year > $get_year) {
+            $tenant_month = 12-$tenant_month+1;
+          }
           if ($row_tenant_month->extract_year == $get_year) {
             $tenant_month = $row_tenant_month->extract_month;
           }
@@ -244,12 +253,51 @@
                                 
         $result_costs_tenant = mysqli_query($db, $query_costs_tenant);
         while($row_costs_tenant = mysqli_fetch_object($result_costs_tenant)) {
+          $sum = $row_costs_tenant->amount/$tenant_month;
+          $costs_sum += $sum;
+          $sum = round($sum, 2);
           echo "<tr>\n";
           echo '<td headers="usage">' . $row_costs_tenant->usage . "</td>\n";
-          echo '<td headers="amount">' . $row_costs_tenant->amount/$tenant_month . "€</td>\n";
+          echo '<td headers="amount">' . number_format($sum, 2, ',', '') . "€</td>\n";
           echo "<td headers=\"percent\">100%</td>\n";
-          echo '<td headers="sum">' . $row_costs_tenant->amount/$tenant_month . "€</td>\n</tr>\n";
+          echo '<td headers="sum">' . number_format($sum, 2, ',', '') . "€</td>\n</tr>\n";
         }
+        
+        /*
+         * Summe Kosten */
+        echo "<tr>
+                <td class=\"sum\" headers=\"usage\" colspan=\"3\">Summe</td>\n
+                <td class=\"sum\" headers=\"sum\">" . number_format($costs_sum, 2, ',', '') . "€</td>\n
+              </tr>\n";
+        
+        /*
+         * Gezahlte Nebenkosten */
+        $query_payment = 'SELECT
+                            SUM(payment.amount) AS amount
+                          FROM
+                            payment
+                          WHERE 
+                            payment.tenant_id = ' . $tenant_id . ' AND
+                            YEAR( payment.for_date ) = \'' . $get_year . '\' AND
+                            MONTH( payment.for_date ) = \'' . $month . '\' AND
+                            payment.amount_kind = 1';
+
+        $result_payment = mysqli_query($db, $query_payment);
+        while($row_payment = mysqli_fetch_object($result_payment)) {
+          $payment_amount = $row_payment->amount;
+        }
+        
+        echo "<td headers=\"usage\" colspan=\"3\">Gezahlt</td>\n";
+        echo '<td headers="sum">' . number_format($payment_amount, 2, ',', '') . "€</td>\n</tr>\n";
+        
+        /*
+         * Differenz zwischen Kosten und gezahlten Nebenkosten */
+        $costs_diff = $costs_sum - $payment_amount;
+        echo "<tr>
+                <td class=\"sum\" headers=\"usage\" colspan=\"3\">Betrag</td>\n
+                <td class=\"sum\" headers=\"sum\">" . number_format($costs_diff, 2, ',', '') . "€</td>\n
+              </tr>\n";
+        
         echo '</tbody>
             </table>';
       }
