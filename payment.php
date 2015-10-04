@@ -49,8 +49,6 @@
       <?php
         include 'inc/dbconnect.inc.php';
 
-        
-
         /*
          * Auswahlliste mit Mietern ausgeben */
         $query_tenant = 'SELECT

@@ -34,6 +34,10 @@ p {
     margin-bottom: 5px;
     }
 
+p.no_print {
+    display: none;
+    }
+
 td {
     padding: 2px 5px;
     }
