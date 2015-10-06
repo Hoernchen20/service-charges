@@ -19,14 +19,14 @@
       if ( !(is_numeric($_POST['size'])) ) {
         exit('Fehler: Wohnfläche');
       } else {
-        $size = str_replace(',', '.', $_POST['size']);
+        $post_size = str_replace(',', '.', $_POST['size']);
       }
       
       $query = 'INSERT INTO
                   house
                 VALUES (\'\',\'' .
                   $post_name . '\',\'' .
-                  $size . '\')';
+                  $post_size . '\')';
       $result = mysqli_real_query($db, $query);
       mysqli_close($db);
     }

@@ -21,9 +21,13 @@
       $post_usage = mysqli_real_escape_string($db, $_POST['usage']);
       
       if ( !(is_numeric($_POST['amount'])) ) {
-        exit('Fehler: Kosten');
+        if ( ctype_digit(str_replace(',', '', $_POST['amount'])) ) {
+          $amount = str_replace(',', '.', $_POST['amount']);
+        } else {
+          exit('Fehler: Kosten');
+        }
       } else {
-        $amount = str_replace(',', '.', $_POST['amount']);
+        $amount = $_POST['amount'];
       }
       
       /*
