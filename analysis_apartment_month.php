@@ -171,14 +171,15 @@
           
           /*
            * Kumulierte Kosten */
-          static $old_tenant = NULL;
-          if ($old_tenant == NULL) {
-            $old_tenant = $tenant_name;
+          static $old_tenant_name = NULL;
+          if ($old_tenant_name == NULL) {
+            $old_tenant_name = $tenant_name;
           }
           
-          
-          if ($old_tenant != $tenant_name) {
+          if ($old_tenant_name != $tenant_name) {
+            echo '<h2>' . $house_name . ' - ' . $apartment_name . "</h2>\n";
             echo '<h2>Zusammenfassung' . "</h2>\n";
+            echo '<p>Mieter: ' . $old_tenant_name . "</p>\n";
             echo '<table class="analysis">
                   <thead>
                     <tr>
@@ -202,7 +203,7 @@
             echo '</tbody>
               </table>';
                   
-            $old_tenant = $tenant_name;
+            $old_tenant_name = $tenant_name;
             $costs_diff_month = array_fill(1, 12, 0);
           }
 
