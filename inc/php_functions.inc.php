@@ -19,4 +19,9 @@ function strtodate ($str_date) {
     return false;
   }
 }
+
+function ReturnMonthName($number) {
+  $month = array('Januar', 'Februar', 'März', 'April','Mai','Juni','Juli','August','September','Oktober','November','Dezember');
+  return $month[$number-1];
+} 
 ?>

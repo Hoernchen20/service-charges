@@ -49,6 +49,7 @@
     <div class="inhalt">
     <?php
       include 'inc/dbconnect.inc.php';
+      include 'inc/php_functions.inc.php';
       
       $costs_diff = 0;
       $costs_diff_month = array_fill(1, 12, 0);
@@ -188,7 +189,7 @@
                   <tbody>';
             for ($i = 1; $i < 13; $i++) {
               echo "<tr>
-                      <td headers=\"usage\">" . $i . "</td>\n
+                      <td headers=\"usage\">" . ReturnMonthName($i) . "</td>\n
                       <td headers=\"sum\">" . number_format($costs_diff_month[$i], 2, ',', '') . "€</td>\n
                     </tr>\n";
             }
@@ -400,7 +401,7 @@
                   <tbody>';
             for ($i = 1; $i < 13; $i++) {
               echo "<tr>
-                      <td headers=\"usage\">" . $i . "</td>\n
+                      <td headers=\"usage\">" . ReturnMonthName($i) . "</td>\n
                       <td headers=\"sum\">" . number_format($costs_diff_month[$i], 2, ',', '') . "€</td>\n
                     </tr>\n";
             }
