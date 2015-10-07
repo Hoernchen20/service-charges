@@ -49,7 +49,11 @@
     <div class="inhalt">
     <?php
       include 'inc/dbconnect.inc.php';
-
+      
+      $costs_diff = 0;
+      $costs_diff_month = array_fill(1, 12, 0);
+      $old_house = '';
+      
       /*
        * Eingabefeld für Jahr */
       echo '<p class="no_print">
@@ -73,8 +77,6 @@
       echo '<label for="apartment_id"></label>
               <select name="apartment_id">';
               
-      $old_house = '';
-      
       while($row_apartment = mysqli_fetch_object($result_apartment)) {
         if ($row_apartment->house_name != $old_house) {
           echo '<optgroup label="' . $row_apartment->house_name . "\">\n";
@@ -129,41 +131,8 @@
           $house_id = $row->id;
           $apartment_percent = $row->apartment_percent;
         }
-         
-        echo '<h2>' . $house_name . ' - ' . $apartment_name . "</h2>\n";
-              
+        
         for ($month = 1; $month < 13; $month++) {
-        /*
-         * Monat ausgeben */
-          echo '<h3>1.' . $month . '.' . $get_year . ' - ';
-          switch ($month) {
-            case 1: echo '31';
-                    break;
-            case 2: echo '28';
-                    break;
-            case 3: echo '31';
-                    break;
-            case 4: echo '30';
-                    break;
-            case 5: echo '31';
-                    break;
-            case 6: echo '30';
-                    break;
-            case 7: echo '31';
-                    break;
-            case 8: echo '31';
-                    break;
-            case 9: echo '30';
-                    break;
-            case 10: echo '31';
-                     break;
-            case 11: echo '30';
-                     break;
-            case 12: echo '31';
-                     break;
-          }
-          echo '.' . $month . '.' . $get_year . "</h3>\n";
-   
           /*
            * Mieter ausgeben */
           $query_persons = 'SELECT
@@ -194,10 +163,82 @@
           $result = mysqli_query($db, $query);
           while($row = mysqli_fetch_object($result)) {
             $tenant_id = $row->id;
-            $persons_percent = $row->persons/$sum_persons*100;
-            echo '<p>Mieter: ' . $row->name . '<br>Personen: ' . $row->persons . ' von ' . $sum_persons . ' (' . number_format($persons_percent, 2, ',', '') . '
-              %)<br>Wohnfläche: ' . $apartment_size . 'm² von ' . $house_size . 'm² (' . number_format($apartment_percent, 2, ',', '') . "%)</p>\n";
+            $tenant_name = $row->name;
+            $persons = $row->persons;
+            $persons_percent = $persons/$sum_persons*100;
           }
+          
+          /*
+           * Kumulierte Kosten */
+          static $old_tenant = NULL;
+          if ($old_tenant == NULL) {
+            $old_tenant = $tenant_name;
+          }
+          
+          
+          if ($old_tenant != $tenant_name) {
+            echo '<h2>Zusammenfassung' . "</h2>\n";
+            echo '<table class="analysis">
+                  <thead>
+                    <tr>
+                      <th id="usage">Monat</th>
+                      <th id="amount">Betrag</th>
+                    </tr>
+                  </thead>
+                  <tbody>';
+            for ($i = 1; $i < 13; $i++) {
+              echo "<tr>
+                      <td headers=\"usage\">" . $i . "</td>\n
+                      <td headers=\"sum\">" . number_format($costs_diff_month[$i], 2, ',', '') . "€</td>\n
+                    </tr>\n";
+            }
+            
+            echo "<tr>
+                    <td class=\"sum\" headers=\"usage\">Summe Betrag</td>\n
+                    <td class=\"sum\" headers=\"sum\">" . number_format(array_sum($costs_diff_month), 2, ',', '') . "€</td>\n
+                  </tr>\n";
+                    
+            echo '</tbody>
+              </table>';
+                  
+            $old_tenant = $tenant_name;
+            $costs_diff_month = array_fill(1, 12, 0);
+          }
+
+          echo '<h2>' . $house_name . ' - ' . $apartment_name . "</h2>\n";
+          /*
+           * Monat ausgeben */
+          echo '<h3>1.' . $month . '.' . $get_year . ' - ';
+          switch ($month) {
+            case 1: echo '31';
+                    break;
+            case 2: echo '28';
+                    break;
+            case 3: echo '31';
+                    break;
+            case 4: echo '30';
+                    break;
+            case 5: echo '31';
+                    break;
+            case 6: echo '30';
+                    break;
+            case 7: echo '31';
+                    break;
+            case 8: echo '31';
+                    break;
+            case 9: echo '30';
+                    break;
+            case 10: echo '31';
+                     break;
+            case 11: echo '30';
+                     break;
+            case 12: echo '31';
+                     break;
+          }
+          echo '.' . $month . '.' . $get_year . "</h3>\n";
+          
+          echo '<p>Mieter: ' . $tenant_name . '<br>Personen: ' . $persons . ' von ' . $sum_persons . ' (' . number_format($persons_percent, 2, ',', '') . '
+              %)<br>Wohnfläche: ' . $apartment_size . 'm² von ' . $house_size . 'm² (' . number_format($apartment_percent, 2, ',', '') . "%)</p>\n";
                 
           /*
            * Tabelle für Kosten ausgeben 
@@ -338,6 +379,7 @@
           /*
            * Differenz zwischen Kosten und gezahlten Nebenkosten */
           $costs_diff = $costs_sum - $payment_amount;
+          $costs_diff_month[$month] = $costs_diff;
           echo "<tr>
                   <td class=\"sum\" headers=\"usage\" colspan=\"3\">Betrag</td>\n
                   <td class=\"sum\" headers=\"sum\">" . number_format($costs_diff, 2, ',', '') . "€</td>\n
@@ -345,6 +387,31 @@
           
           echo '</tbody>
               </table>';
+              
+          if ($month == 12) {
+            echo '<h2>Zusammenfassung' . "</h2>\n";
+            echo '<table class="analysis">
+                  <thead>
+                    <tr>
+                      <th id="usage">Monat</th>
+                      <th id="amount">Betrag</th>
+                    </tr>
+                  </thead>
+                  <tbody>';
+            for ($i = 1; $i < 13; $i++) {
+              echo "<tr>
+                      <td headers=\"usage\">" . $i . "</td>\n
+                      <td headers=\"sum\">" . number_format($costs_diff_month[$i], 2, ',', '') . "€</td>\n
+                    </tr>\n";
+            }
+            echo "<tr>
+                    <td class=\"sum\" headers=\"usage\">Summe Betrag</td>\n
+                    <td class=\"sum\" headers=\"sum\">" . number_format(array_sum($costs_diff_month), 2, ',', '') . "€</td>\n
+                  </tr>\n";
+
+            echo '</tbody>
+              </table>';
+          }
         }
       }
       mysqli_close($db);
