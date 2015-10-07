@@ -57,12 +57,11 @@
       
       /*
        * Eingabefeld für Jahr */
-      echo '<p class="no_print">
+      echo '<div class="no_print">
               <form action="analysis_apartment_month.php?year=' . 'apartment_id=' . '" method="get">
               <label for="year">Jahr</label>
               <input type="text" name="year" class="feld" />';
-              
-      
+
       /*
        * Auswahlliste mit Häusern ausgeben */
       $query_apartment = 'SELECT
@@ -75,7 +74,7 @@
       $result_apartment = mysqli_query($db, $query_apartment);
       
       
-      echo '<label for="apartment_id"></label>
+      echo '<label for="apartment_id" />
               <select name="apartment_id">';
               
       while($row_apartment = mysqli_fetch_object($result_apartment)) {
@@ -94,7 +93,7 @@
       echo '</select>
             <input type="submit" value="Eingeben" />
             </form>
-          </p>';
+          </div>';
       
       if ($_GET) {
         /*

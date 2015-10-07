@@ -34,7 +34,7 @@ p {
     margin-bottom: 5px;
     }
 
-p.no_print {
+div.no_print {
     display: none;
     }
 
@@ -54,6 +54,8 @@ div.topnavi {
 
 /* Inhalt */
 div.inhalt {
+    width: 800px;
+    margin: auto;
     padding: 10px 10px 10px 10px;
     }
 
