@@ -138,7 +138,7 @@
               echo '<td headers="amount_kind">Kaution' . "</td>\n";
             }
             
-            echo '<td headers="extra">' . $row_payment->amount . "€</td>\n";
+            echo '<td headers="extra" class="right">' . number_format($row_payment->amount, 2, ',', '') . "€</td>\n";
             echo '<td headers="change"><a href="#" onclick="fenster_two_param(\'payment_change\',\'' . $row_payment->id . '\',\'' . $_GET['id'] . "')\">Ändern</a></td>\n</tr>\n";
           }
 

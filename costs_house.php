@@ -89,7 +89,7 @@
             echo "<tr>\n";
             echo '<td headers="year">' . $row_costs->year . "</td>\n";
             echo '<td headers="usage">' . $row_costs->usage . "</td>\n";
-            echo '<td headers="amount">' . $row_costs->amount . "</td>\n";
+            echo '<td headers="amount" class="right">' . number_format($row_costs->amount, 2, ',', '') . "€</td>\n";
             echo '<td headers="change"><a href="#" onclick="fenster_param(\'costs_house_change\', \'' . $row_costs->id . "')\">Ändern</a></td>\n</tr>\n";
           }
     

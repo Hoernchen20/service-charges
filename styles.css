@@ -103,6 +103,10 @@ div.inhalt td {
     text-align: left;
     }
 
+div.inhalt td.right {
+    text-align: right;
+    }
+
 div.inhalt table {
     width: 800px;
     margin-bottom: 40px;

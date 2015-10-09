@@ -118,7 +118,7 @@
           </p>';
       echo '<p>
               <label for="amount">Betrag:</label>
-              <input type="text" name="amount" class="feld" value="' . $row_payment->amount . '"/>
+              <input type="text" name="amount" class="feld" value="' . number_format($row_payment->amount, 2, ',', '') . '"/>
             </p>';
     }
   ?>
