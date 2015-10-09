@@ -183,20 +183,20 @@
                   <thead>
                     <tr>
                       <th id="usage">Monat</th>
-                      <th id="amount">Betrag</th>
+                      <th class="right" id="amount">Betrag</th>
                     </tr>
                   </thead>
                   <tbody>';
             for ($i = 1; $i < 13; $i++) {
               echo "<tr>
                       <td headers=\"usage\">" . ReturnMonthName($i) . "</td>\n
-                      <td headers=\"sum\">" . number_format($costs_diff_month[$i], 2, ',', '') . "€</td>\n
+                      <td class=\"right\" headers=\"sum\">" . number_format($costs_diff_month[$i], 2, ',', '') . "€</td>\n
                     </tr>\n";
             }
             
             echo "<tr>
                     <td class=\"sum\" headers=\"usage\">Summe Betrag</td>\n
-                    <td class=\"sum\" headers=\"sum\">" . number_format(array_sum($costs_diff_month), 2, ',', '') . "€</td>\n
+                    <td class=\"sum right\" headers=\"sum\">" . number_format(array_sum($costs_diff_month), 2, ',', '') . "€</td>\n
                   </tr>\n";
                     
             echo '</tbody>
@@ -251,9 +251,9 @@
                   <thead>
                     <tr>
                       <th id="usage">Zweck</th>
-                      <th id="amount">Kosten</th>
-                      <th id="percent">Anteil</th>
-                      <th id="sum">Summe</th>
+                      <th class="right" id="amount">Kosten</th>
+                      <th class="right" id="percent">Anteil</th>
+                      <th class="right" id="sum">Summe</th>
                     </tr>
                   </thead>
                   <tbody>';
@@ -275,9 +275,9 @@
             $costs_sum += $sum;
             echo "<tr>\n";
             echo '<td headers="usage">' . $row_costs_house->usage . "</td>\n";
-            echo '<td headers="amount">' . number_format($row_costs_house->amount, 2, ',', '') . "€</td>\n";
-            echo '<td headers="percent">' . number_format($apartment_percent, 2, ',', '') . "%</td>\n";
-            echo '<td headers="sum">' . number_format($sum, 2, ',', '') . "€</td>\n</tr>\n";          
+            echo '<td headers="amount" class="right">' . number_format($row_costs_house->amount, 2, ',', '') . "€</td>\n";
+            echo '<td headers="percent" class="right">' . number_format($apartment_percent, 2, ',', '') . "%</td>\n";
+            echo '<td headers="sum" class="right">' . number_format($sum, 2, ',', '') . "€</td>\n</tr>\n";          
           }
 
           /* 
@@ -300,9 +300,9 @@
             $costs_sum += $sum;
             echo "<tr>\n";
             echo '<td headers="usage">' . $row_costs_person->usage . "</td>\n";
-            echo '<td headers="amount">' . number_format($row_costs_person->amount, 2, ',', '') . "€</td>\n";
-            echo '<td headers="percent">' . number_format($persons_percent, 2, ',', '') . "%</td>\n";
-            echo '<td headers="sum">' . number_format($sum, 2, ',', '') . "€</td>\n</tr>\n";
+            echo '<td headers="amount" class="right">' . number_format($row_costs_person->amount, 2, ',', '') . "€</td>\n";
+            echo '<td headers="percent" class="right">' . number_format($persons_percent, 2, ',', '') . "%</td>\n";
+            echo '<td headers="sum" class="right">' . number_format($sum, 2, ',', '') . "€</td>\n</tr>\n";
           }
 
           /*
@@ -345,16 +345,16 @@
             $sum = round($sum, 2);
             echo "<tr>\n";
             echo '<td headers="usage">' . $row_costs_tenant->usage . "</td>\n";
-            echo '<td headers="amount">' . number_format($sum, 2, ',', '') . "€</td>\n";
-            echo "<td headers=\"percent\">100%</td>\n";
-            echo '<td headers="sum">' . number_format($sum, 2, ',', '') . "€</td>\n</tr>\n";
+            echo '<td headers="amount" class="right">' . number_format($sum, 2, ',', '') . "€</td>\n";
+            echo "<td headers=\"percent\" class=\"right\">100,00%</td>\n";
+            echo '<td headers="sum" class="right">' . number_format($sum, 2, ',', '') . "€</td>\n</tr>\n";
           }
           
           /*
            * Summe Kosten */
           echo "<tr>
                   <td class=\"sum\" headers=\"usage\" colspan=\"3\">Summe</td>\n
-                  <td class=\"sum\" headers=\"sum\">" . number_format($costs_sum, 2, ',', '') . "€</td>\n
+                  <td class=\"sum right\" headers=\"sum\">" . number_format($costs_sum, 2, ',', '') . "€</td>\n
                 </tr>\n";
           
           /*
@@ -375,7 +375,7 @@
           }
           
           echo "<td headers=\"usage\" colspan=\"3\">Gezahlt</td>\n";
-          echo '<td headers="sum">' . number_format($payment_amount, 2, ',', '') . "€</td>\n</tr>\n";
+          echo '<td headers="sum" class="right">' . number_format($payment_amount, 2, ',', '') . "€</td>\n</tr>\n";
           
           /*
            * Differenz zwischen Kosten und gezahlten Nebenkosten */
@@ -383,7 +383,7 @@
           $costs_diff_month[$month] = $costs_diff;
           echo "<tr>
                   <td class=\"sum\" headers=\"usage\" colspan=\"3\">Betrag</td>\n
-                  <td class=\"sum\" headers=\"sum\">" . number_format($costs_diff, 2, ',', '') . "€</td>\n
+                  <td class=\"sum right\" headers=\"sum\">" . number_format($costs_diff, 2, ',', '') . "€</td>\n
                 </tr>\n";
           
           echo '</tbody>
@@ -396,19 +396,19 @@
                   <thead>
                     <tr>
                       <th id="usage">Monat</th>
-                      <th id="amount">Betrag</th>
+                      <th class="right" id="amount">Betrag</th>
                     </tr>
                   </thead>
                   <tbody>';
             for ($i = 1; $i < 13; $i++) {
               echo "<tr>
                       <td headers=\"usage\">" . ReturnMonthName($i) . "</td>\n
-                      <td headers=\"sum\">" . number_format($costs_diff_month[$i], 2, ',', '') . "€</td>\n
+                      <td class=\"right\" headers=\"sum\">" . number_format($costs_diff_month[$i], 2, ',', '') . "€</td>\n
                     </tr>\n";
             }
             echo "<tr>
                     <td class=\"sum\" headers=\"usage\">Summe Betrag</td>\n
-                    <td class=\"sum\" headers=\"sum\">" . number_format(array_sum($costs_diff_month), 2, ',', '') . "€</td>\n
+                    <td class=\"sum right\" headers=\"sum\">" . number_format(array_sum($costs_diff_month), 2, ',', '') . "€</td>\n
                   </tr>\n";
 
             echo '</tbody>

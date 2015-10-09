@@ -59,8 +59,16 @@ div.inhalt {
     padding: 10px 10px 10px 10px;
     }
 
+div.inhalt th.right {
+    text-align: right;
+    }
+
 div.inhalt td {
     text-align: left;
+    }
+
+div.inhalt td.right {
+    text-align: right;
     }
 
 div.inhalt table {
