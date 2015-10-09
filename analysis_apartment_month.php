@@ -391,6 +391,7 @@
               
           if ($month == 12) {
             echo '<h2>Zusammenfassung' . "</h2>\n";
+            echo '<p>Mieter: ' . $tenant_name . "</p>\n";
             echo '<table class="analysis">
                   <thead>
                     <tr>
