@@ -318,26 +318,30 @@
                                  WHERE tenant.id = '. $tenant_id;
           $result_tenant_month = mysqli_query($db, $query_tenant_month);
           while($row_tenant_month = mysqli_fetch_object($result_tenant_month)) {
-            if ($row_tenant_month->entry_year < $get_year) {
-              $tenant_month = 0;
+            /* NULL-Werte abfangen, um weitere if-Anweisungen zu vermeiden */
+            if ($row_tenant_month->extract_year == NULL) {
+              $row_tenant_month->extract_year = $get_year+1;
             }
-            if ($row_tenant_month->entry_year == $get_year) {
-              $tenant_month = $row_tenant_month->entry_month;
-            } 
-            if ($row_tenant_month->extract_year > $get_year) {
-              $tenant_month = 12-$tenant_month+1;
-            }
-            if ($row_tenant_month->extract_year == $get_year) {
+            
+            /* Monate ausrechnen */
+            if ($row_tenant_month->entry_year < $get_year && $row_tenant_month->extract_year == $get_year) {
               $tenant_month = $row_tenant_month->extract_month;
+            } else if ($row_tenant_month->entry_year < $get_year && $row_tenant_month->extract_year > $get_year) {
+              $tenant_month = 12;
+            } else if ($row_tenant_month->entry_year == $get_year && $row_tenant_month->extract_year == $get_year) {
+              $tenant_month = $row_tenant_month->extract_month - $row_tenant_month->entry_month + 1;
+            }else if ($row_tenant_month->entry_year == $get_year && $row_tenant_month->extract_year > $get_year) {
+              $tenant_month = 12-$row_tenant_month->entry_month+1;
             }
-          }               
+          }
               
           $query_costs_tenant = 'SELECT
                                    costs_tenant.usage, costs_tenant.amount
                                  FROM
                                    costs_tenant
-                                 WHERE costs_tenant.tenant_id = ' . $tenant_id;                         
-                                  
+                                 WHERE costs_tenant.tenant_id = ' . $tenant_id . '
+                                   AND costs_tenant.year = ' . $get_year;
+
           $result_costs_tenant = mysqli_query($db, $query_costs_tenant);
           while($row_costs_tenant = mysqli_fetch_object($result_costs_tenant)) {
             $sum = $row_costs_tenant->amount/$tenant_month;
