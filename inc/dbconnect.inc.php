@@ -1,5 +1,5 @@
 <?php
-    $db = mysqli_connect("localhost", "web", "2LqSK25bYKB2awQT", "nebenkosten");
+    $db = mysqli_connect("localhost", "web", "3;WD3G#T", "nebenkosten");
      
     if(!$db) {
         exit("Verbindungsfehler: ".mysqli_connect_error());
