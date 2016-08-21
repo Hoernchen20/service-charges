@@ -40,8 +40,9 @@
         <li>
           <h3>Auswerten</h3>
           <ul class="subnavi">
-            <li><a href="analysis_tenant_month.php">Mieter pro Monat</a></li>
+<!--            <li><a href="analysis_tenant_month.php">Mieter pro Monat</a></li> -->
             <li><a href="analysis_apartment_month.php">Wohnung pro Monat</a></li>
+            <li><a href="analysis_apartment_year.php">Wohnung pro Jahr</a></li>
           </ul>
         </li>
       </ul>
@@ -55,45 +56,7 @@
       $costs_diff_month = array_fill(1, 12, 0);
       $old_house = '';
       
-      /*
-       * Eingabefeld für Jahr */
-      echo '<div class="no_print">
-              <form action="analysis_apartment_month.php?year=' . 'apartment_id=' . '" method="get">
-              <label for="year">Jahr</label>
-              <input type="text" name="year" class="feld" />';
-
-      /*
-       * Auswahlliste mit Häusern ausgeben */
-      $query_apartment = 'SELECT
-                            house.name AS house_name, apartment.name AS apartment_name, apartment.id
-                          FROM
-                            apartment
-                          LEFT JOIN
-                            house ON house.id = apartment.house_id
-                          ORDER BY house.name ASC, apartment.name ASC';
-      $result_apartment = mysqli_query($db, $query_apartment);
-      
-      
-      echo '<label for="apartment_id" />
-              <select name="apartment_id">';
-              
-      while($row_apartment = mysqli_fetch_object($result_apartment)) {
-        if ($row_apartment->house_name != $old_house) {
-          echo '<optgroup label="' . $row_apartment->house_name . "\">\n";
-        }
-        
-        echo '<option value="' . $row_apartment->id . '">' . $row_apartment->apartment_name . '</option>' . "\n";
-        
-        if ($row_apartment->house_name != $old_house) {
-          $old_house = $row_apartment->house_name;
-          echo "</optgroup>\n";
-        }
-      }
-      
-      echo '</select>
-            <input type="submit" value="Eingeben" />
-            </form>
-          </div>';
+      PrintSelectionBar($db, "analysis_apartment_month.php");
       
       if ($_GET) {
         /*
@@ -135,22 +98,8 @@
         for ($month = 1; $month < 13; $month++) {
           /*
            * Mieter ausgeben */
-          $query_persons = 'SELECT
-                              SUM(tenant.persons) AS sum_persons
-                            FROM
-                              tenant
-                            LEFT JOIN
-                              apartment ON tenant.apartment_id = apartment.id
-                            WHERE apartment.house_id = ' . $house_id . '
-                              AND tenant.entry <= \'' . $get_year . '-' . $month . '-02\' 
-                              AND (tenant.extract >= \'' . $get_year . '-' . $month . '-02\' 
-                              OR tenant.extract IS NULL)';                         
+          $sum_persons = GetSumPersons($db, $house_id, $get_year, $month);
 
-          $result_persons = mysqli_query($db, $query_persons);
-          while($row_persons = mysqli_fetch_object($result_persons)) {
-            $sum_persons = $row_persons->sum_persons;
-          }
-                
           $query = 'SELECT
                       tenant.id, tenant.name, tenant.persons
                     FROM
@@ -363,20 +312,7 @@
           
           /*
            * Gezahlte Nebenkosten */
-          $query_payment = 'SELECT
-                              SUM(payment.amount) AS amount
-                            FROM
-                              payment
-                            WHERE 
-                              payment.tenant_id = ' . $tenant_id . ' AND
-                              YEAR( payment.for_date ) = \'' . $get_year . '\' AND
-                              MONTH( payment.for_date ) = \'' . $month . '\' AND
-                              payment.amount_kind = 1';
-
-          $result_payment = mysqli_query($db, $query_payment);
-          while($row_payment = mysqli_fetch_object($result_payment)) {
-            $payment_amount = $row_payment->amount;
-          }
+          $payment_amount = GetMonthAmountExtra($db, $tenant_id, $get_year, $month);
           
           echo "<td headers=\"usage\" colspan=\"3\">Gezahlt</td>\n";
           echo '<td headers="sum" class="right">' . number_format($payment_amount, 2, ',', '') . "€</td>\n</tr>\n";
