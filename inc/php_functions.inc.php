@@ -129,4 +129,20 @@ function GetMonthAmountExtra ($db, $tenant_id, $year, $month) {
     return $row_payment->amount;
   }
 }
+
+function GetEuro ($euro) {
+  if ($euro == 0) {
+    return '-';
+  } else {
+    return number_format($euro, 2, ',', '') . '€';
+  }
+}
+
+function GetPercent ($percent) {
+  if ($percent == 0) {
+    return '-';
+  } else {
+    return number_format($percent, 2, ',', '') . '%';
+  }
+}
 ?>

@@ -49,10 +49,14 @@
     </div>
     <div class="inhalt">
     <?php
-      error_reporting (E_ALL);
+/*      error_reporting (E_ALL);
       ini_set ('display_errors', 'On');
-      include 'inc/dbconnect.inc.php';
+*/      include 'inc/dbconnect.inc.php';
       include 'inc/php_functions.inc.php';
+      
+      $num_tenant = 0;
+      $costs_month[][][] = array();
+      $tenant_info[][] = array();
       
       $costs_diff = 0;
       $costs_diff_month = array_fill(1, 12, 0);
@@ -125,12 +129,10 @@
           $num_costs_house += 1;
         }
         
-        
-
+        /*
+         * Monatliche Auswertung pro Mieter */
         for ($month = 1; $month < 13; $month++) {
-          $num_tenant = 0;
-          $costs_month[][][] = array();
-          $tenant_info[][] = array();
+          echo ' Nummer Mieter: ' . $num_tenant;
           
           /*
            * Mieter abfragen */
@@ -151,6 +153,31 @@
             $tenant_info[$num_tenant]['tenant_name'] = $row->name;
             $tenant_info[$num_tenant]['persons'] = $row->persons;
             $tenant_info[$num_tenant]['persons_percent'] = $row->persons/$sum_persons*100;
+          }
+          
+          /*
+           * Wenn sich der Mieter ändert Array weiterblättern */
+          static $old_tenant_name = NULL;
+          if ($old_tenant_name == NULL) {
+            $old_tenant_name = $tenant_info[$num_tenant]['tenant_name'];
+          }
+/*          
+          static $old_persons = NULL;
+          if ($old_persons == NULL) {
+            $old_persons = $persons;
+          }
+          
+          static $old_persons_percent = NULL;
+          if ($old_persons_percent == NULL) {
+            $old_persons_percent = $persons_percent;
+          }
+*/
+          if ($old_tenant_name != $tenant_info[$num_tenant]['tenant_name']) {
+            $old_tenant_name = $tenant_info[$num_tenant]['tenant_name'];
+            $num_tenant += 1;
+            
+/*          $old_persons = $persons;
+          $old_persons_percent = $persons_percent;*/
           }
           
           /* Kosten pro Haus kopieren */
@@ -240,40 +267,13 @@
             $costs_month[$num_tenant][$num_costs_house + $num_costs_person + 1 + $num_costs_tenant][$month*2+1] = $sum;
             $num_costs_tenant += 1;
           }
-
-
-          /*
-           * Wenn sich der Mieter ändert Array zwischen speichern */
-          static $old_tenant_name = NULL;
-          if ($old_tenant_name == NULL) {
-            $old_tenant_name = $tenant_info[$num_tenant]['tenant_name'];
-          }
-/*          
-          static $old_persons = NULL;
-          if ($old_persons == NULL) {
-            $old_persons = $persons;
-          }
-          
-          static $old_persons_percent = NULL;
-          if ($old_persons_percent == NULL) {
-            $old_persons_percent = $persons_percent;
-          }
-*/
-          if ($old_tenant_name != $tenant_info[$num_tenant]['tenant_name']) {
-            $old_tenant_name = $tenant_info[$num_tenant]['tenant_name'];
-            $num_tenant += 1;
-            
-/*          $old_persons = $persons;
-          $old_persons_percent = $persons_percent;*/
-          }
-          
-          
-          
-          
         }
         
+        /*
+         * Ausgabe */
         for ($num = 0; $num <= $num_tenant; $num++) {
           PrintHouseApartmentInfo($house_info);
+          echo '<p>Mieter: ' . $tenant_info[$num_tenant]['tenant_name'] . "</p>\n";
             echo '<table class="analysis">
                   <thead>
                     <tr>
@@ -306,20 +306,20 @@
               
               
               echo '<tr>
-                      <td>' . $costs_month[$num][$i][0] . '<br>' . number_format($costs_month[$num][$i][1], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][2], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][3], 2, ',', '') . '</td>
-                      <td>' . number_format($costs_month[$num][$i][4], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][5], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][6], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][7], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][8], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][9], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][10], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][11], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][12], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][13], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][14], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][15], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][16], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][17], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][18], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][19], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][20], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][21], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][22], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][23], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][24], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][25], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][26], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][27], 2, ',', '') . '€</td>
+                      <td>' . $costs_month[$num][$i][0] . '<br>' . GetEuro($costs_month[$num][$i][1]) . '</td>
+                      <td>' . GetPercent($costs_month[$num][$i][2], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][3]) . '</td>
+                      <td>' . GetPercent($costs_month[$num][$i][4], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][5]) . '</td>
+                      <td>' . GetPercent($costs_month[$num][$i][6], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][7]) . '</td>
+                      <td>' . GetPercent($costs_month[$num][$i][8], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][9]) . '</td>
+                      <td>' . GetPercent($costs_month[$num][$i][10], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][11]) . '</td>
+                      <td>' . GetPercent($costs_month[$num][$i][12], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][13]) . '</td>
+                      <td>' . GetPercent($costs_month[$num][$i][14], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][15]) . '</td>
+                      <td>' . GetPercent($costs_month[$num][$i][16], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][17]) . '</td>
+                      <td>' . GetPercent($costs_month[$num][$i][18], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][19]) . '</td>
+                      <td>' . GetPercent($costs_month[$num][$i][20], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][21]) . '</td>
+                      <td>' . GetPercent($costs_month[$num][$i][22], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][23]) . '</td>
+                      <td>' . GetPercent($costs_month[$num][$i][24], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][25]) . '</td>
+                      <td>' . GetPercent($costs_month[$num][$i][26], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][27]) . '</td>
                     </tr>';
             }
             echo '</tbody>
