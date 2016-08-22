@@ -132,8 +132,6 @@
         /*
          * Monatliche Auswertung pro Mieter */
         for ($month = 1; $month < 13; $month++) {
-          echo ' Nummer Mieter: ' . $num_tenant;
-          
           /*
            * Mieter abfragen */
           $sum_persons = GetSumPersons($db, $house_info['house_id'], $get_year, $month);
@@ -149,18 +147,23 @@
 
           $result = mysqli_query($db, $query);
           while($row = mysqli_fetch_object($result)) {
+            /*
+             * Wenn sich der Mieter ändert Array weiterblättern */
+            static $old_tenant_id = NULL;
+            if ($old_tenant_id == NULL) {
+              $old_tenant_id = $row->id;
+            }
+            if ($old_tenant_id != $row->id) {
+              $num_tenant += 1;
+              $old_tenant_id = $row->id;
+            }
+            
             $tenant_info[$num_tenant]['tenant_id'] = $row->id;
             $tenant_info[$num_tenant]['tenant_name'] = $row->name;
             $tenant_info[$num_tenant]['persons'] = $row->persons;
             $tenant_info[$num_tenant]['persons_percent'] = $row->persons/$sum_persons*100;
           }
-          
-          /*
-           * Wenn sich der Mieter ändert Array weiterblättern */
-          static $old_tenant_name = NULL;
-          if ($old_tenant_name == NULL) {
-            $old_tenant_name = $tenant_info[$num_tenant]['tenant_name'];
-          }
+
 /*          
           static $old_persons = NULL;
           if ($old_persons == NULL) {
@@ -172,15 +175,15 @@
             $old_persons_percent = $persons_percent;
           }
 */
-          if ($old_tenant_name != $tenant_info[$num_tenant]['tenant_name']) {
-            $old_tenant_name = $tenant_info[$num_tenant]['tenant_name'];
-            $num_tenant += 1;
+          
             
 /*          $old_persons = $persons;
           $old_persons_percent = $persons_percent;*/
-          }
+
           
-          /* Kosten pro Haus kopieren */
+          
+          /* 
+           * Kosten pro Haus kopieren */
           for ($i = 1; $i < count($costs); $i++) {
             $costs_month[$num_tenant][$i][0] = $costs[$i][0];
             $costs_month[$num_tenant][$i][1] = $costs[$i][1];
@@ -273,7 +276,8 @@
          * Ausgabe */
         for ($num = 0; $num <= $num_tenant; $num++) {
           PrintHouseApartmentInfo($house_info);
-          echo '<p>Mieter: ' . $tenant_info[$num_tenant]['tenant_name'] . "</p>\n";
+          echo '<p>Mieter: ' . $tenant_info[$num]['tenant_name'] . '<br>Personen: ' . $tenant_info[$num]['persons'] .
+                  ' von ' . $sum_persons . ' (' . number_format($tenant_info[$num_tenant]['persons_percent'], 2, ',', '') ."%)</p>\n";
             echo '<table class="analysis">
                   <thead>
                     <tr>
