@@ -67,6 +67,34 @@ function PrintSelectionBar ($db, $file_name) {
       </div>';
 }
 
+function GetHouseApartmentInfo ($db, $apartment_id, &$info) {
+  $query = 'SELECT
+              apartment.name AS apartment_name, house.name AS house_name,
+              apartment.size AS apartment_size, house.size AS house_size,
+              house.id,
+              (apartment.size * 100 / house.size) AS apartment_percent
+            FROM
+              apartment
+            RIGHT JOIN
+              house ON apartment.house_id = house.id
+            WHERE apartment.id =' . $apartment_id;
+  $result = mysqli_query($db, $query);
+        
+  while($row = mysqli_fetch_object($result)) {
+    $info['apartment_name'] = $row->apartment_name;
+    $info['house_name'] = $row->house_name;
+    $info['apartment_size'] = $row->apartment_size;
+    $info['house_size'] = $row->house_size;
+    $info['house_id'] = $row->id;
+    $info['apartment_percent'] = $row->apartment_percent;
+  }
+}
+
+function PrintHouseApartmentInfo ($info) {
+  echo '<h2>' . $info['house_name'] . ' - ' . $info['apartment_name'] . "</h2>\n";
+  echo 'Wohnfläche: ' . $info['apartment_size'] . 'm² von ' . $info['house_size'] . 'm² (' . number_format($info['apartment_percent'], 2, ',', '') . "%)</p>\n";
+}
+
 function GetSumPersons ($db, $house_id, $year, $month) {
   $query_persons = 'SELECT
                       SUM(tenant.persons) AS sum_persons

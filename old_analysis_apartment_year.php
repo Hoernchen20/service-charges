@@ -49,14 +49,15 @@
     </div>
     <div class="inhalt">
     <?php
-      error_reporting (E_ALL);
-      ini_set ('display_errors', 'On');
+/*      error_reporting (E_ALL);
+      ini_set ('display_errors', 'On');*/
       include 'inc/dbconnect.inc.php';
       include 'inc/php_functions.inc.php';
       
       $costs_diff = 0;
       $costs_diff_month = array_fill(1, 12, 0);
       $old_house = '';
+      $data[][26] = array();
       $data_copied = 0;
       
       PrintSelectionBar($db, "analysis_apartment_year.php");
@@ -77,19 +78,26 @@
         }
         /*
          * Grunddaten auslesen */
-        $house_info[] = array();
-        $house_info['apartment_name'] = NULL;
-        $house_info['house_name'] = NULL;
-        $house_info['apartment_size'] = NULL;
-        $house_info['house_size'] = NULL;
-        $house_info['house_id'] = NULL;
-        $house_info['apartment_percent'] = NULL;
-        GetHouseApartmentInfo($db, $get_apartment_id, $house_info);
-
-
-        /*
-         *  Array für Kosten anlegen */
-        $costs[][26] = array();
+        $query = 'SELECT
+                    apartment.name AS apartment_name, house.name AS house_name,
+                    apartment.size AS apartment_size, house.size AS house_size,
+                    house.id,
+                    (apartment.size * 100 / house.size) AS apartment_percent
+                  FROM
+                    apartment
+                  RIGHT JOIN
+                    house ON apartment.house_id = house.id
+                  WHERE apartment.id =' . $get_apartment_id;
+        $result = mysqli_query($db, $query);
+              
+        while($row = mysqli_fetch_object($result)) {
+          $apartment_name = $row->apartment_name;
+          $house_name = $row->house_name;
+          $apartment_size = $row->apartment_size;
+          $house_size = $row->house_size;
+          $house_id = $row->id;
+          $apartment_percent = $row->apartment_percent;
+        }
         
         /* 
          * Kosten pro Haus */
@@ -108,33 +116,28 @@
                                 
         $result_costs_house = mysqli_query($db, $query_costs_house);
         while($row_costs_house = mysqli_fetch_object($result_costs_house)) {
-          $sum = $row_costs_house->amount/100*$house_info['apartment_percent']/12;
+          $sum = $row_costs_house->amount/100*$apartment_percent/12;
           
-          $costs[$num_costs_house+1][0] = $row_costs_house->usage;
-          $costs[$num_costs_house+1][1] = $row_costs_house->amount;
-          $costs[$num_costs_house+1][2] = $house_info['apartment_percent'] / 12;
-          $costs[$num_costs_house+1][3] = $sum;
+          $data[$num_costs_house+1][0] = $row_costs_house->usage;
+          $data[$num_costs_house+1][1] = $row_costs_house->amount;
+          $data[$num_costs_house+1][2] = $apartment_percent / 12;
+          $data[$num_costs_house+1][3] = $sum;
           
-          /*
-           * Kosten für die restlichen Monate kopieren */
           for ($i = 1; $i < 12; $i++) {
-            $costs[$num_costs_house+1][$i*2+2] = $costs[$num_costs_house+1][2];
-            $costs[$num_costs_house+1][$i*2+3] = $costs[$num_costs_house+1][3];
+            $data[$num_costs_house+1][$i*2+2] = $data[$num_costs_house+1][2];
+            $data[$num_costs_house+1][$i*2+3] = $data[$num_costs_house+1][3];
           }
           
+          $data[$num_costs_house + 1][26] = $apartment_percent;
           $num_costs_house += 1;
         }
         
         
 
         for ($month = 1; $month < 13; $month++) {
-          $num_tenant = 0;
-          $costs_month[][][] = array();
-          $tenant_info[][] = array();
-          
           /*
            * Mieter abfragen */
-          $sum_persons = GetSumPersons($db, $house_info['house_id'], $get_year, $month);
+          $sum_persons = GetSumPersons($db, $house_id, $get_year, $month);
           
           $query = 'SELECT
                       tenant.id, tenant.name, tenant.persons
@@ -147,18 +150,47 @@
 
           $result = mysqli_query($db, $query);
           while($row = mysqli_fetch_object($result)) {
-            $tenant_info[$num_tenant]['tenant_id'] = $row->id;
-            $tenant_info[$num_tenant]['tenant_name'] = $row->name;
-            $tenant_info[$num_tenant]['persons'] = $row->persons;
-            $tenant_info[$num_tenant]['persons_percent'] = $row->persons/$sum_persons*100;
+            $tenant_id = $row->id;
+            $tenant_name = $row->name;
+            $persons = $row->persons;
+            $persons_percent = $persons/$sum_persons*100;
           }
           
-          /* Kosten pro Haus kopieren */
-          for ($i = 1; $i < count($costs); $i++) {
-            $costs_month[$num_tenant][$i][0] = $costs[$i][0];
-            $costs_month[$num_tenant][$i][1] = $costs[$i][1];
-            $costs_month[$num_tenant][$i][$month * 2] = $costs[$i][$month * 2];
-            $costs_month[$num_tenant][$i][$month * 2 + 1] = $costs[$i][$month * 2 + 1];
+          /*
+           * Wenn sich der Mieter ändert Array zwischen speichern */
+          static $old_tenant_name = NULL;
+          if ($old_tenant_name == NULL) {
+            $old_tenant_name = $tenant_name;
+          }
+          
+          static $old_persons = NULL;
+          if ($old_persons == NULL) {
+            $old_persons = $persons;
+          }
+          
+          static $old_persons_percent = NULL;
+          if ($old_persons_percent == NULL) {
+            $old_persons_percent = $persons_percent;
+          }
+          
+          if ($old_tenant_name != $tenant_name || $month == 12) {
+            $data_copy = $data;
+            $data_copied = 1;
+          
+            for ($i = 1; $i < count($data_copy); $i++) {
+              $data_copy[$i][27] = 0;
+              for ($j = 1; $j < 13; $j++){
+                if ($data_copy[$i][$j*2+1] == NULL) {
+                  break;
+                }
+                $data_copy[$i][27] += $data_copy[$i][$j*2+1];
+              }
+            }
+            
+            
+          $old_tenant_name = $tenant_name;
+          $old_persons = $persons;
+          $old_persons_percent = $persons_percent;
           }
           
           /* 
@@ -178,14 +210,14 @@
                                   
           $result_costs_person = mysqli_query($db, $query_costs_person);
           while($row_costs_person = mysqli_fetch_object($result_costs_person)) {
-            $sum = $row_costs_person->amount / 100 * $tenant_info[$num_tenant]['persons_percent'] / 12;
+            $sum = $row_costs_person->amount/100*$persons_percent/12;
+            echo 'Monat: ' . $month;
+            $data[$num_costs_house + 1 + $num_costs_person][0] = $row_costs_person->usage;
+            $data[$num_costs_house + 1 + $num_costs_person][1] = $row_costs_person->amount;
+            $data[$num_costs_house + 1 + $num_costs_person][$month*2] = $persons_percent / 12;
+            $data[$num_costs_house + 1 + $num_costs_person][$month*2+1] = $sum;
             
-            $costs_month[$num_tenant][$num_costs_house + 1 + $num_costs_person][0] = $row_costs_person->usage;
-            $costs_month[$num_tenant][$num_costs_house + 1 + $num_costs_person][1] = $row_costs_person->amount;
-            $costs_month[$num_tenant][$num_costs_house + 1 + $num_costs_person][$month*2] = $tenant_info[$num_tenant]['persons_percent'] / 12;
-            $costs_month[$num_tenant][$num_costs_house + 1 + $num_costs_person][$month*2+1] = $sum;
-            
-            $costs_month[$num_tenant][$num_costs_house + 1 + $num_costs_person][26] = $tenant_info[$num_tenant]['persons_percent'];
+            $data[$num_costs_house + 1 + $num_costs_person][26] = $persons_percent;
             $num_costs_person += 1;
           }
           
@@ -201,8 +233,7 @@
                                    YEAR( tenant.extract ) AS extract_year, MONTH( tenant.extract ) AS extract_month
                                  FROM
                                    tenant
-                                 WHERE tenant.id = '. $tenant_info[$num_tenant]['tenant_id'];
-
+                                 WHERE tenant.id = '. $tenant_id;
           $result_tenant_month = mysqli_query($db, $query_tenant_month);
           while($row_tenant_month = mysqli_fetch_object($result_tenant_month)) {
             /* NULL-Werte abfangen, um weitere if-Anweisungen zu vermeiden */
@@ -226,54 +257,24 @@
                                    costs_tenant.usage, costs_tenant.amount
                                  FROM
                                    costs_tenant
-                                 WHERE costs_tenant.tenant_id = ' . $tenant_info[$num_tenant]['tenant_id'] . '
+                                 WHERE costs_tenant.tenant_id = ' . $tenant_id . '
                                    AND costs_tenant.year = ' . $get_year;
 
           $result_costs_tenant = mysqli_query($db, $query_costs_tenant);
           while($row_costs_tenant = mysqli_fetch_object($result_costs_tenant)) {
-            $sum = $row_costs_tenant->amount / $tenant_month;
-//            $sum = round($sum, 2);
+            $sum = $row_costs_tenant->amount/$tenant_month;
+            $sum = round($sum, 2);
             
-            $costs_month[$num_tenant][$num_costs_house + $num_costs_person + 1 + $num_costs_tenant][0] = $row_costs_tenant->usage;
-            $costs_month[$num_tenant][$num_costs_house + $num_costs_person + 1 + $num_costs_tenant][1] = $row_costs_tenant->amount;
-            $costs_month[$num_tenant][$num_costs_house + $num_costs_person + 1 + $num_costs_tenant][$month*2] = 100 / $tenant_month;
-            $costs_month[$num_tenant][$num_costs_house + $num_costs_person + 1 + $num_costs_tenant][$month*2+1] = $sum;
+            $data[$num_costs_house + $num_costs_person + 1 + $num_costs_tenant][0] = $row_costs_tenant->usage;
+            $data[$num_costs_house + $num_costs_person + 1 + $num_costs_tenant][1] = $row_costs_tenant->amount;
+            $data[$num_costs_house + $num_costs_person + 1 + $num_costs_tenant][$month*2] = 100;
+            $data[$num_costs_house + $num_costs_person + 1 + $num_costs_tenant][$month*2+1] = $sum;
             $num_costs_tenant += 1;
           }
-
-
-          /*
-           * Wenn sich der Mieter ändert Array zwischen speichern */
-          static $old_tenant_name = NULL;
-          if ($old_tenant_name == NULL) {
-            $old_tenant_name = $tenant_info[$num_tenant]['tenant_name'];
-          }
-/*          
-          static $old_persons = NULL;
-          if ($old_persons == NULL) {
-            $old_persons = $persons;
-          }
           
-          static $old_persons_percent = NULL;
-          if ($old_persons_percent == NULL) {
-            $old_persons_percent = $persons_percent;
-          }
-*/
-          if ($old_tenant_name != $tenant_info[$num_tenant]['tenant_name']) {
-            $old_tenant_name = $tenant_info[$num_tenant]['tenant_name'];
-            $num_tenant += 1;
-            
-/*          $old_persons = $persons;
-          $old_persons_percent = $persons_percent;*/
-          }
-          
-          
-          
-          
-        }
-        
-        for ($num = 0; $num <= $num_tenant; $num++) {
-          PrintHouseApartmentInfo($house_info);
+          if ($data_copied == 1) {
+            echo '<h2>' . $house_name . ' - ' . $apartment_name . "</h2>\n";
+            echo '<p>Mieter: ' . $old_tenant_name . '<br>Wohnfläche: ' . $apartment_size . 'm² von ' . $house_size . 'm² (' . number_format($apartment_percent, 2, ',', '') . "%)</p>\n";
             echo '<table class="analysis">
                   <thead>
                     <tr>
@@ -294,38 +295,29 @@
                     </tr>
                   </thead>
                 <tbody>';
-            for ($i = 1; $i < count($costs_month[$num]); $i++) {
-              
-              $costs_month[$num][$i][26] = 0;
-              $costs_month[$num][$i][27] = 0;
-              
-              for ($j = 1; $j < 13; $j++) {
-                $costs_month[$num][$i][26] += $costs_month[$num][$i][$j * 2];
-                $costs_month[$num][$i][27] += $costs_month[$num][$i][$j * 2 +1];
-              }
-              
-              
+            for ($i = 1; $i < count($data_copy); $i++) {
               echo '<tr>
-                      <td>' . $costs_month[$num][$i][0] . '<br>' . number_format($costs_month[$num][$i][1], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][2], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][3], 2, ',', '') . '</td>
-                      <td>' . number_format($costs_month[$num][$i][4], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][5], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][6], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][7], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][8], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][9], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][10], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][11], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][12], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][13], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][14], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][15], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][16], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][17], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][18], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][19], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][20], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][21], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][22], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][23], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][24], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][25], 2, ',', '') . '€</td>
-                      <td>' . number_format($costs_month[$num][$i][26], 2, ',', '') . '%<br>' . number_format($costs_month[$num][$i][27], 2, ',', '') . '€</td>
+                      <td>' . $data_copy[$i][0] . '<br>' . number_format($data_copy[$i][1], 2, ',', '') . '€</td>
+                      <td>' . number_format($data_copy[$i][2], 2, ',', '') . '%<br>' . number_format($data_copy[$i][3], 2, ',', '') . '</td>
+                      <td>' . number_format($data_copy[$i][4], 2, ',', '') . '%<br>' . number_format($data_copy[$i][5], 2, ',', '') . '€</td>
+                      <td>' . number_format($data_copy[$i][6], 2, ',', '') . '%<br>' . number_format($data_copy[$i][7], 2, ',', '') . '€</td>
+                      <td>' . number_format($data_copy[$i][8], 2, ',', '') . '%<br>' . number_format($data_copy[$i][9], 2, ',', '') . '€</td>
+                      <td>' . number_format($data_copy[$i][10], 2, ',', '') . '%<br>' . number_format($data_copy[$i][11], 2, ',', '') . '€</td>
+                      <td>' . number_format($data_copy[$i][12], 2, ',', '') . '%<br>' . number_format($data_copy[$i][13], 2, ',', '') . '€</td>
+                      <td>' . number_format($data_copy[$i][14], 2, ',', '') . '%<br>' . number_format($data_copy[$i][15], 2, ',', '') . '€</td>
+                      <td>' . number_format($data_copy[$i][16], 2, ',', '') . '%<br>' . number_format($data_copy[$i][17], 2, ',', '') . '€</td>
+                      <td>' . number_format($data_copy[$i][18], 2, ',', '') . '%<br>' . number_format($data_copy[$i][19], 2, ',', '') . '€</td>
+                      <td>' . number_format($data_copy[$i][20], 2, ',', '') . '%<br>' . number_format($data_copy[$i][21], 2, ',', '') . '€</td>
+                      <td>' . number_format($data_copy[$i][22], 2, ',', '') . '%<br>' . number_format($data_copy[$i][23], 2, ',', '') . '€</td>
+                      <td>' . number_format($data_copy[$i][24], 2, ',', '') . '%<br>' . number_format($data_copy[$i][25], 2, ',', '') . '€</td>
+                      <td>' . number_format($data_copy[$i][26], 2, ',', '') . '%<br>' . number_format($data_copy[$i][27], 2, ',', '') . '€</td>
                     </tr>';
             }
             echo '</tbody>
                 </table>';
           }
-      }
+        }
+      }     
       mysqli_close($db);
     ?>
     </div>
