@@ -126,12 +126,18 @@ function GetMonthAmountExtra ($db, $tenant_id, $year, $month) {
 
   $result_payment = mysqli_query($db, $query_payment);
   while($row_payment = mysqli_fetch_object($result_payment)) {
-    return $row_payment->amount;
+    if ( isset($row_payment->amount) ) {
+      return $row_payment->amount;
+    } else {
+      return 0;
+    }
   }
 }
 
 function GetEuro ($euro) {
-  if ($euro == 0) {
+  if (is_string($euro)) {
+    return $euro;
+  } else if ($euro == 0) {
     return '-';
   } else {
     return number_format($euro, 2, ',', '') . '€';
@@ -139,7 +145,9 @@ function GetEuro ($euro) {
 }
 
 function GetPercent ($percent) {
-  if ($percent == 0) {
+  if (is_string($percent)) {
+    return $percent;
+  } else if ($percent == 0) {
     return '-';
   } else {
     return number_format($percent, 2, ',', '') . '%';
