@@ -51,7 +51,7 @@
     <?php
 /*      error_reporting (E_ALL);
       ini_set ('display_errors', 'On');
-*/      include 'inc/dbconnect.inc.php';
+  */    include 'inc/dbconnect.inc.php';
       include 'inc/php_functions.inc.php';
       
       $num_tenant = 0;
@@ -317,26 +317,40 @@
               
               if ($i == count($costs_month[$num])) {
                 echo '<tr class="sum">';
+                echo '  <td>' . $costs_month[$num][$i][0] . '<br>' . GetEuro($costs_month[$num][$i][1]) . '</td>
+                          <td class="right" >' . GetEuro($costs_month[$num][$i][2]) . '<br>' . GetEuro($costs_month[$num][$i][3]) . '</td>
+                          <td class="right" >' . GetEuro($costs_month[$num][$i][4]) . '<br>' . GetEuro($costs_month[$num][$i][5]) . '</td>
+                          <td class="right" >' . GetEuro($costs_month[$num][$i][6]) . '<br>' . GetEuro($costs_month[$num][$i][7]) . '</td>
+                          <td class="right" >' . GetEuro($costs_month[$num][$i][8]) . '<br>' . GetEuro($costs_month[$num][$i][9]) . '</td>
+                          <td class="right" >' . GetEuro($costs_month[$num][$i][10]) . '<br>' . GetEuro($costs_month[$num][$i][11]) . '</td>
+                          <td class="right" >' . GetEuro($costs_month[$num][$i][12]) . '<br>' . GetEuro($costs_month[$num][$i][13]) . '</td>
+                          <td class="right" >' . GetEuro($costs_month[$num][$i][14]) . '<br>' . GetEuro($costs_month[$num][$i][15]) . '</td>
+                          <td class="right" >' . GetEuro($costs_month[$num][$i][16]) . '<br>' . GetEuro($costs_month[$num][$i][17]) . '</td>
+                          <td class="right" >' . GetEuro($costs_month[$num][$i][18]) . '<br>' . GetEuro($costs_month[$num][$i][19]) . '</td>
+                          <td class="right" >' . GetEuro($costs_month[$num][$i][20]) . '<br>' . GetEuro($costs_month[$num][$i][21]) . '</td>
+                          <td class="right" >' . GetEuro($costs_month[$num][$i][22]) . '<br>' . GetEuro($costs_month[$num][$i][23]) . '</td>
+                          <td class="right" >' . GetEuro($costs_month[$num][$i][24]) . '<br>' . GetEuro($costs_month[$num][$i][25]) . '</td>';
               } else {
                 echo '<tr>';
+                echo '  <td>' . $costs_month[$num][$i][0] . '<br>' . GetEuro($costs_month[$num][$i][1]) . '</td>
+                          <td class="right" >' . GetPercent($costs_month[$num][$i][2], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][3]) . '</td>
+                          <td class="right" >' . GetPercent($costs_month[$num][$i][4], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][5]) . '</td>
+                          <td class="right" >' . GetPercent($costs_month[$num][$i][6], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][7]) . '</td>
+                          <td class="right" >' . GetPercent($costs_month[$num][$i][8], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][9]) . '</td>
+                          <td class="right" >' . GetPercent($costs_month[$num][$i][10], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][11]) . '</td>
+                          <td class="right" >' . GetPercent($costs_month[$num][$i][12], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][13]) . '</td>
+                          <td class="right" >' . GetPercent($costs_month[$num][$i][14], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][15]) . '</td>
+                          <td class="right" >' . GetPercent($costs_month[$num][$i][16], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][17]) . '</td>
+                          <td class="right" >' . GetPercent($costs_month[$num][$i][18], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][19]) . '</td>
+                          <td class="right" >' . GetPercent($costs_month[$num][$i][20], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][21]) . '</td>
+                          <td class="right" >' . GetPercent($costs_month[$num][$i][22], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][23]) . '</td>
+                          <td class="right" >' . GetPercent($costs_month[$num][$i][24], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][25]) . '</td>';
               }
-              
-              echo '  <td>' . $costs_month[$num][$i][0] . '<br>' . GetEuro($costs_month[$num][$i][1]) . '</td>
-                      <td class="right" >' . GetPercent($costs_month[$num][$i][2], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][3]) . '</td>
-                      <td class="right" >' . GetPercent($costs_month[$num][$i][4], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][5]) . '</td>
-                      <td class="right" >' . GetPercent($costs_month[$num][$i][6], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][7]) . '</td>
-                      <td class="right" >' . GetPercent($costs_month[$num][$i][8], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][9]) . '</td>
-                      <td class="right" >' . GetPercent($costs_month[$num][$i][10], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][11]) . '</td>
-                      <td class="right" >' . GetPercent($costs_month[$num][$i][12], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][13]) . '</td>
-                      <td class="right" >' . GetPercent($costs_month[$num][$i][14], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][15]) . '</td>
-                      <td class="right" >' . GetPercent($costs_month[$num][$i][16], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][17]) . '</td>
-                      <td class="right" >' . GetPercent($costs_month[$num][$i][18], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][19]) . '</td>
-                      <td class="right" >' . GetPercent($costs_month[$num][$i][20], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][21]) . '</td>
-                      <td class="right" >' . GetPercent($costs_month[$num][$i][22], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][23]) . '</td>
-                      <td class="right" >' . GetPercent($costs_month[$num][$i][24], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][25]) . '</td>';
-              
+
+              /*
+               * Letzte Spalte und Zeile als Euro ausgeben */
               if ($i == count($costs_month[$num])) {
-                echo '<td class="right" >' . GetEuro($costs_month[$num][$i][26], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][27]) . '</td>';
+                echo '<td class="right" >' . GetEuro($costs_month[$num][$i][26]) . '<br>' . GetEuro($costs_month[$num][$i][27]) . '</td>';
               } else {
                 echo '<td class="right" >' . GetPercent($costs_month[$num][$i][26], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][27]) . '</td>';
               }

@@ -127,7 +127,7 @@ function GetMonthAmountExtra ($db, $tenant_id, $year, $month) {
   $result_payment = mysqli_query($db, $query_payment);
   while($row_payment = mysqli_fetch_object($result_payment)) {
     if ( isset($row_payment->amount) ) {
-      return $row_payment->amount;
+      return intval($row_payment->amount);
     } else {
       return 0;
     }
