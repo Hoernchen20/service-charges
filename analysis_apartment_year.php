@@ -284,10 +284,10 @@
         for ($num = 0; $num <= $num_tenant; $num++) {
           PrintHouseApartmentInfo($house_info);
           echo '<p>Mieter: ' . $tenant_info[$num]['tenant_name'] . '</p>';
-            echo '<table class="analysis">
+            echo '<table class="analysis_year">
                   <thead>
                     <tr>
-                      <th></th>
+                      <th>' . $get_year . '</th>
                       <th>Januar</th>
                       <th>Februar</th>
                       <th>März</th>
@@ -315,8 +315,13 @@
                 $costs_month[$num][$i][27] += $costs_month[$num][$i][$j * 2 +1];
               }
               
-              echo '<tr>
-                      <td>' . $costs_month[$num][$i][0] . '<br>' . GetEuro($costs_month[$num][$i][1]) . '</td>
+              if ($i == count($costs_month[$num])) {
+                echo '<tr class="sum">';
+              } else {
+                echo '<tr>';
+              }
+              
+              echo '  <td>' . $costs_month[$num][$i][0] . '<br>' . GetEuro($costs_month[$num][$i][1]) . '</td>
                       <td class="right" >' . GetPercent($costs_month[$num][$i][2], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][3]) . '</td>
                       <td class="right" >' . GetPercent($costs_month[$num][$i][4], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][5]) . '</td>
                       <td class="right" >' . GetPercent($costs_month[$num][$i][6], 2, ',', '') . '<br>' . GetEuro($costs_month[$num][$i][7]) . '</td>

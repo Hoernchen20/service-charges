@@ -92,7 +92,7 @@ function GetHouseApartmentInfo ($db, $apartment_id, &$info) {
 
 function PrintHouseApartmentInfo ($info) {
   echo '<h2>' . $info['house_name'] . ' - ' . $info['apartment_name'] . "</h2>\n";
-  echo 'Wohnfläche: ' . $info['apartment_size'] . 'm² von ' . $info['house_size'] . 'm² (' . number_format($info['apartment_percent'], 2, ',', '') . "%)</p>\n";
+  echo '<p>Wohnfläche: ' . $info['apartment_size'] . 'm² von ' . $info['house_size'] . 'm² (' . number_format($info['apartment_percent'], 2, ',', '') . "%)</p>\n";
 }
 
 function GetSumPersons ($db, $house_id, $year, $month) {

@@ -114,6 +114,7 @@ div.inhalt td.right {
 div.inhalt table {
     width: 800px;
     margin-bottom: 40px;
+    border-spacing: 0px;
     }
     
 div.inhalt table caption {
@@ -138,6 +139,25 @@ div.inhalt table.analysis tr {
     }
     
 div.inhalt table.analysis td.sum {
+    border-top: 2px solid #000;
+    padding-top: 5px;
+    }
+
+div.inhalt table.analysis_year {
+    width: auto;
+    font-size: 12px;
+    }
+
+div.inhalt table.analysis_year td.right {
+    text-align: right;
+    border-left: 1px dotted black;
+    }
+    
+div.inhalt table.analysis_year th {
+    width: 80px;
+    }
+    
+div.inhalt table.analysis_year tr.sum td {
     border-top: 2px solid #000;
     padding-top: 5px;
     }
