@@ -25,13 +25,13 @@ function ReturnMonthName ($number) {
   return $month[$number-1];
 }
 
-function PrintSelectionBar ($db, $file_name) {
+function PrintSelectionBar ($db, $file_name, $default_year) {
   /*
    * Eingabefeld für Jahr */
   echo '<div class="no_print">
           <form action="' . $file_name . '?year=' . 'apartment_id=' . '" method="get">
           <label for="year">Jahr</label>
-          <input type="text" name="year" class="feld" />';
+          <input type="text" name="year" class="feld" value="' . $default_year . '"/>';
 
   /*
    * Auswahlliste mit Häusern ausgeben */
@@ -127,7 +127,7 @@ function GetMonthAmountExtra ($db, $tenant_id, $year, $month) {
   $result_payment = mysqli_query($db, $query_payment);
   while($row_payment = mysqli_fetch_object($result_payment)) {
     if ( isset($row_payment->amount) ) {
-      return intval($row_payment->amount);
+      return floatval($row_payment->amount);
     } else {
       return 0;
     }

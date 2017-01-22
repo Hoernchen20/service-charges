@@ -51,7 +51,7 @@
     <?php
 /*      error_reporting (E_ALL);
       ini_set ('display_errors', 'On');
-  */    include 'inc/dbconnect.inc.php';
+*/      include 'inc/dbconnect.inc.php';
       include 'inc/php_functions.inc.php';
       
       $num_tenant = 0;
@@ -63,9 +63,11 @@
       $old_house = '';
       $data_copied = 0;
       
-      PrintSelectionBar($db, "analysis_apartment_year.php");
       
-      if ($_GET) {
+      
+      if ( $_GET == NULL ) {
+          PrintSelectionBar($db, "analysis_apartment_year.php", 2016);
+      } else {
         /*
          * Check $_GET */
         if ( !(ctype_digit($_GET['year'])) ) {
@@ -79,6 +81,8 @@
         } else {
           $get_apartment_id = $_GET['apartment_id'];
         }
+        
+        PrintSelectionBar($db, "analysis_apartment_year.php", $get_year);
         /*
          * Grunddaten auslesen */
         $house_info[] = array();
