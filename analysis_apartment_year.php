@@ -66,7 +66,7 @@
       
       
       if ( $_GET == NULL ) {
-          PrintSelectionBar($db, "analysis_apartment_year.php", 2016);
+          PrintSelectionBar($db, "analysis_apartment_year.php", (date("Y") - 1));
       } else {
         /*
          * Check $_GET */

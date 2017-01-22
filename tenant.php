@@ -39,8 +39,9 @@
         <li>
           <h3>Auswerten</h3>
           <ul class="subnavi">
-            <li><a href="analysis_tenant_month.php">Mieter pro Monat</a></li>
+<!--            <li><a href="analysis_tenant_month.php">Mieter pro Monat</a></li> -->
             <li><a href="analysis_apartment_month.php">Wohnung pro Monat</a></li>
+            <li><a href="analysis_apartment_year.php">Wohnung pro Jahr</a></li>
           </ul>
         </li>
       </ul>

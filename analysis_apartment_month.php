@@ -56,7 +56,7 @@
       $costs_diff_month = array_fill(1, 12, 0);
       $old_house = '';
       
-      PrintSelectionBar($db, "analysis_apartment_month.php");
+      PrintSelectionBar($db, "analysis_apartment_month.php", (date("Y") - 1));
       
       if ($_GET) {
         /*
