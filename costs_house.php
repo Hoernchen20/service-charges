@@ -8,11 +8,28 @@
     <div class="inhalt">
       <h2>Verwalten - Kosten pro Haus</h2>
       <?php
-        $query_house = 'SELECT
-                    house.id, house.name
-                  FROM
-                    house
-                  ORDER BY house.name ASC';
+        if ( $_GET == NULL ) {
+          $query_house = 'SELECT
+                            house.id, house.name
+                          FROM
+                            house
+                          ORDER BY house.name ASC';
+        } else {
+          /*
+           * Check $_GET */
+          if ( !(ctype_digit($_GET['house_id'])) ) {
+            exit('Error: Param');
+          } else {
+            $GetHouseId = $_GET['house_id'];
+          }
+
+          $query_house = 'SELECT
+                      house.id, house.name
+                    FROM
+                      house
+                    WHERE house.id = ' . $GetHouseId;
+        }
+      
         $result_house = mysqli_query($db, $query_house);
 
         while($row_house = mysqli_fetch_object($result_house)) {

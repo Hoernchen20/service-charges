@@ -8,13 +8,28 @@
     <div class="inhalt">
       <h2>Verwalten - Mieter</h2>
       <?php
-        include 'inc/dbconnect.inc.php';
+        if ( $_GET == NULL ) {
+          $query = 'SELECT
+                      house.id, house.name
+                      FROM
+                        house
+                      ORDER BY house.name ASC';
+        } else {
+          /*
+           * Check $_GET */
+          if ( !(ctype_digit($_GET['house_id'])) ) {
+            exit('Error: Param');
+          } else {
+            $GetHouseId = $_GET['house_id'];
+          }
 
-        $query = 'SELECT
-                    house.id, house.name
-                    FROM
-                      house
-                    ORDER BY house.name ASC';
+          $query = 'SELECT
+                      house.id, house.name
+                      FROM
+                        house
+                      WHERE house.id = ' . $GetHouseId;
+        }
+        
         $result = mysqli_query($db, $query);
             
         while($row = mysqli_fetch_object($result)) {

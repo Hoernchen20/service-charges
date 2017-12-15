@@ -9,9 +9,9 @@
       <h2>Verwalten - Wohnung</h2>
       <?php
   
-      error_reporting (E_ALL);
+/*      error_reporting (E_ALL);
       ini_set ('display_errors', 'On');
-
+*/
         if ( $_GET == NULL ) {
           echo '<p>Kein Haus selektiert!</p>';
         } else {
