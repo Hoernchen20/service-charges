@@ -73,7 +73,7 @@
     
           while($row = mysqli_fetch_object($result)) {
             echo "<tr>\n";
-            echo '<td headers="name">' . $row->name . "</td>\n";
+            echo '<td headers="name"><a href="apartment.php?house_id=' . $row->id . '">' . $row->name . "</a></td>\n";
             echo '<td headers="size">' . $row->size . "m²</td>\n";
             echo '<td headers="change"><a href="#" onclick="fenster_param(\'house_change\', \'' . $row->id . "')\">Ändern</a></td>\n</tr>\n";
           }

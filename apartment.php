@@ -49,18 +49,35 @@
     <div class="inhalt">
       <h2>Verwalten - Wohnung</h2>
       <?php
-        include 'inc/dbconnect.inc.php';
-            
-        $query = 'SELECT
-                    house.id, house.name
-                  FROM
-                    house
-                  ORDER BY house.name ASC';
-        $result = mysqli_query($db, $query);
-            
-        while($row = mysqli_fetch_object($result)) {
+  
+      error_reporting (E_ALL);
+      ini_set ('display_errors', 'On');
+
+        if ( $_GET == NULL ) {
+          echo '<p>Kein Haus selektiert!</p>';
+        } else {
+          /*
+           * Check $_GET */
+          if ( !(ctype_digit($_GET['house_id'])) ) {
+            exit('Error: Param');
+          } else {
+            $get_house_id = $_GET['house_id'];
+          }
+          include 'inc/dbconnect.inc.php';
+              
+          $query = 'SELECT
+                      house.name
+                    FROM
+                      house
+                    WHERE house.id = ' . $get_house_id;
+          $result = mysqli_query($db, $query);
+              
+          while($row = mysqli_fetch_object($result)) {
+            $house_name = $row->name;
+          }
+          
           echo '<table>
-                  <caption>' . $row->name . '</caption>
+                  <caption>' . $house_name . '</caption>
                   <thead>
                     <tr>
                       <th id="name">Name</th>
@@ -71,7 +88,7 @@
                   <tfoot>
                     <tr>
                       <td headers="name" colspan="3">
-                        <a href="#" onclick="fenster_param(\'apartment_new\',\'' . $row->id . '\')">Neue Wohnung anlegen</a>
+                        <a href="#" onclick="fenster_param(\'apartment_new\',\'' . $get_house_id . '\')">Neue Wohnung anlegen</a>
                       </td>
                     </tr>
                   </tfoot>
@@ -81,7 +98,7 @@
                                 apartment.id, apartment.name, apartment.size
                               FROM
                                 apartment
-                              WHERE apartment.house_id = ' . $row->id . '
+                              WHERE apartment.house_id = ' . $get_house_id . '
                               ORDER BY apartment.name DESC';
           $result_apartment = mysqli_query($db, $query_apartment);
             
@@ -93,8 +110,8 @@
           }
           echo '</tbody>
               </table>';
+          mysqli_close($db);
         }
-        mysqli_close($db);
       ?>
     </div>
   </body>
