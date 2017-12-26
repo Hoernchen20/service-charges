@@ -8,7 +8,8 @@ function PrintHtmlHeader ($Title) {
       <meta http-equiv="content-type" content="text/html; charset=UTF-8">
       <meta name="author" content="Felix Horn">
       <meta http-equiv="language" content="de">
-      <link rel="stylesheet" type="text/css" href="styles.css">
+      <link rel="stylesheet" media="screen" type="text/css" href="styles.css">
+      <link rel="stylesheet" media="print" type="text/css" href="printer.css">
       <script type="text/JavaScript" src="inc/menue.inc.js"></script>
     </head>
   <body>
