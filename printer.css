@@ -73,7 +73,6 @@ div.inhalt td.right {
 
 div.inhalt table {
     width: 800px;
-    page-break-after: always;
     border-spacing: 0px;
     }
     
@@ -124,4 +123,8 @@ div.inhalt table tr:nth-child(odd) {
 div.inhalt table.analysis_year tr.sum td {
     border-top: 2px solid #000;
     padding-top: 5px;
+    }
+
+div.inhalt div.one_analysis {
+    page-break-after: always;
     }

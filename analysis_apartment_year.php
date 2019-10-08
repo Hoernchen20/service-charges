@@ -243,6 +243,7 @@
         /*
          * Ausgabe */
         for ($num = 0; $num <= $num_tenant; $num++) {
+          echo '<div class="one_analysis">';
           PrintHouseApartmentInfo($house_info);
           echo '<p>Mieter: ' . $tenant_info[$num]['tenant_name'] . '</p>';
             echo '<table class="analysis_year">
@@ -320,6 +321,17 @@
             }
             echo '</tbody>
                 </table>';
+            
+            /*
+             * Abschlusssatz */
+            if ( round($costs_month[$num][count($costs_month[$num])][27], 2) > 0) {
+              echo '<p>Es ist eine Nachzahlung in Höhe von ' . GetEuro($costs_month[$num][count($costs_month[$num])][27]) . ' fällig.</p>';
+            } else if ( round($costs_month[$num][count($costs_month[$num])][27], 2) < 0) {
+              echo '<p>Es ergibt sich ein Guthaben in Höhe von ' . GetEuro(abs($costs_month[$num][count($costs_month[$num])][27])) . '.</p>';
+            } else {
+              echo '<p>Es ist keine Nachzahlung fällig.</p>';
+            }
+            echo '</div>';
           }
       }
       mysqli_close($db);

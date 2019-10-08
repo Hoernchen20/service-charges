@@ -113,7 +113,6 @@ div.inhalt td.right {
 
 div.inhalt table {
     width: 800px;
-    margin-bottom: 40px;
     border-spacing: 0px;
     }
     
@@ -160,4 +159,8 @@ div.inhalt table.analysis_year th {
 div.inhalt table.analysis_year tr.sum td {
     border-top: 2px solid #000;
     padding-top: 5px;
+    }
+
+div.inhalt div.one_analysis {
+    margin-bottom: 40px;
     }
