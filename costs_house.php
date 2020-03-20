@@ -41,11 +41,12 @@
                       <th id="usage">Zweck</th>
                       <th id="amount">Kosten</th>
                       <th id="change">Ändern</th>
+                      <th id="delete">Löschen</th>
                     </tr>
                   </thead>
                   <tfoot>
                     <tr>
-                      <td headers="name" colspan="4">
+                      <td headers="name" colspan="5">
                         <a href="#" onclick="fenster_param(\'costs_house_new\',\'' . $row_house->id . '\')">Neue Kosten pro Haus erfassen</a>
                       </td>
                     </tr>
@@ -65,7 +66,8 @@
             echo '<td headers="year">' . $row_costs->year . "</td>\n";
             echo '<td headers="usage">' . $row_costs->usage . "</td>\n";
             echo '<td headers="amount" class="right">' . number_format($row_costs->amount, 2, ',', '') . "€</td>\n";
-            echo '<td headers="change"><a href="#" onclick="fenster_param(\'costs_house_change\', \'' . $row_costs->id . "')\">Ändern</a></td>\n</tr>\n";
+            echo '<td headers="change"><a href="#" onclick="fenster_param(\'costs_house_change\', \'' . $row_costs->id . "')\">Ändern</a></td>\n";
+            echo '<td headers="delete"><a href="#" onclick="fenster_param(\'costs_house_delete\', \'' . $row_costs->id . "')\">Löschen</a></td>\n</tr>\n";
           }
     
           echo '</tbody>
